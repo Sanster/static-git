@@ -9,7 +9,10 @@ webpack.stdout.on('data', data => {
   console.log(data)
   if (!bundled) {
     bundled = true
-    exec('npm start')
+    const electron = exec('npm start')
+    electron.stdout.on('data', e_data => {
+      console.log(e_data)
+    })
   }
 })
 

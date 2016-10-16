@@ -1,5 +1,6 @@
 var path = require('path')
 var webpack = require('webpack')
+var nodeExternals = require('webpack-node-externals');
 
 module.exports = {
   entry: path.resolve(__dirname, '../app/src/main.js'),
@@ -8,6 +9,11 @@ module.exports = {
     filename: '[name].js'
   },
   target: 'electron',
+  externals: [
+    nodeExternals({
+      'modulesDir' : path.resolve(__dirname, '../node_modules')
+    })
+  ],
   resolveLoader: {
     modules: ['node_modules', __dirname + '../node_modules'],
   },

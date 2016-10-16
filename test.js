@@ -1,6 +1,6 @@
 var Git = require("nodegit");
 // Open the repository directory.
-Git.Repository.open("./")
+Git.Repository.open("/Users/cwq/Github/blog")
   // Open the master branch.
   .then(function(repo) {
     return repo.getMasterCommit();

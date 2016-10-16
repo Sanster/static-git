@@ -1,11 +1,4 @@
 const {app, BrowserWindow} = require('electron')
-const {ipcMain} = require('electron')
-var Git = require('nodegit')
-Git.Repository.open("./")
-  // Open the master branch.
-  .then(function(repo) {
-    console.log(repo);
-  })
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
