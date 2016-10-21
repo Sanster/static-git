@@ -33,6 +33,10 @@ module.exports = {
         loader: 'style!css',
       },
       {
+        test: /\.sass$/,
+        loader: 'style!css!sass',
+      },
+      {
         test: /\.svg$/,
         loaders: ['svg-inline']
       }

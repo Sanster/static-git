@@ -1,54 +1,96 @@
 <template>
   <div>
-    <ul>
-      <li v-for="commit in commits">
-        <p>{{commit.sha()}}</p>
-        <p>{{commit.author().email()}}</p>
-        <p>{{commit.date()}}</p>
-      </li>
-    </ul>
+    <div class="sidebar">
+      <ul>
+        <li v-for="(repo, index) in repos" 
+            class="list-group-item" 
+            :class="{ 'active': isActive(index) }"
+            @click="itemClick(index)"> 
+          <a> {{repo.name}} </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="content">
+      
+    </div>   
   </div>
+
 </template>
 
 <script>
-import Git from 'nodegit'
+import Git from "nodegit";
 
 export default {
   data () {
     return {
-      message: 'Hello Vue 2.0!',
-      commits: []
+      activeIndex: 0,
+      test_start_time: {},
+      test_end_time: {},
+      commits: [],
+      repos: [
+        { 
+          name: 'gitlab',
+        },
+        { 
+          name: 'static-git',
+        },
+        { 
+          name: 'starbucks',
+        }
+      ]
     }
   },
   created () {
-    Git.Repository.open("/Users/cwq/Github/blog")
-      // Open the master branch.
-      .then( (repo) => {
-        console.log("test")
-        return repo.getMasterCommit();
-      })
-      .then( (firstCommitOnMaster) => {
-        // Create a new history event emitter.
-        var history = firstCommitOnMaster.history();
-
-        // Create a counter to only show up to 9 entries.
-        var count = 0;
-
-        // Listen for commit events from the history.
-        history.on("commit", (commit) => {
-          // Disregard commits past 9.
-          if (++count >= 9) {
-            return;
-          }
-          this.commits.push(commit);
-        });
-
-        // Start emitting events.
-        history.start();
-      });
+    console.log(this.$git.test());
+  },
+  methods: {
+    isActive (index) {
+      return index === this.activeIndex;
+    },
+    itemClick (index) {
+      this.activeIndex = index;
+    }
   }
 }
 </script>
 
-<style>
+<style lang="sass">
+body {
+  margin: 0;
+}
+
+.sidebar {
+  position: fixed;
+  width: 220px;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  border-right: 1px solid #e7e7e7;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+
+  .list-group-item {
+    &:hover {
+      background: #e7e7e7;
+    }
+
+    height: 40px;
+    line-height: 40px;
+    background: #f8f8f8;
+    border-bottom: 1px solid #e7e7e7;
+
+    &.active {
+      border-left: 4px solid #86bc63;
+    }
+
+    a {
+      padding-left: 15px;
+    }
+  }
+}
 </style>
