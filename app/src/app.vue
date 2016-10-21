@@ -12,22 +12,21 @@
     </div>
 
     <div class="content">
-      
+      <STable fields="fields" tableData="commits" ></STable>
     </div>   
   </div>
 
 </template>
 
 <script>
-import Git from "nodegit";
+import STable from './components/STable.vue';
 
 export default {
   data () {
     return {
       activeIndex: 0,
-      test_start_time: {},
-      test_end_time: {},
-      commits: [],
+      commits: {},
+      fields: ["name",],
       repos: [
         { 
           name: 'gitlab',
@@ -41,8 +40,11 @@ export default {
       ]
     }
   },
+  components: {
+    STable,
+  },
   created () {
-    console.log(this.$git.test());
+    this.$git.collectData(this.showData);
   },
   methods: {
     isActive (index) {
@@ -50,6 +52,10 @@ export default {
     },
     itemClick (index) {
       this.activeIndex = index;
+    },
+    showData (commits) {
+      console.log(commits);
+      this.commits = commits;
     }
   }
 }

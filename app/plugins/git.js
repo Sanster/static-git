@@ -21,8 +21,21 @@ export default class Git {
     this.commits = {};
   }
 
-  test () {
-    console.log("hello");
+  getAuthorData(author) {
+    if (!this.commits.hasOwnProperty(author)){
+      return this.commits[author] = {
+        commits_count: 0,
+        total_additions: 0,
+        total_deletions: 0,
+        first_commit_time: new Date(2030,1,1),
+        last_commit_time: new Date(2005,1,1),
+      };
+    } else {
+      return this.commits[author];
+    }
+  }
+
+  collectData (showData) {
     NodeGit.Repository.open('/Users/cwq/gitlab-development-kit/gitlab')
     // NodeGit.Repository.open('/Users/cwq/Github/static-git')
       .then( (repo) => {
@@ -39,26 +52,16 @@ export default class Git {
             return;
           }
 
+          let commitDate = commit.date();
           let author = commit.author();
+          let authorData = this.getAuthorData(author);
 
-          if (!this.commits.hasOwnProperty(author)){
-            this.commits[author] = {
-              commits_count: 0,
-              total_additions: 0,
-              total_deletions: 0,
-              first_commit_time: new Date(2030,1,1),
-              last_commit_time: new Date(2005,1,1),
-            };
+          if (authorData.first_commit_time > commitDate) {
+            authorData.first_commit_time = commitDate;
           }
 
-          let commit_date = commit.date();
-
-          if (this.commits[author].first_commit_time > commit_date) {
-            this.commits[author].first_commit_time = commit_date;
-          }
-
-          if (this.commits[author].last_commit_time < commit_date) {
-            this.commits[author].last_commit_time = commit_date;
+          if (authorData.last_commit_time < commitDate) {
+            authorData.last_commit_time = commitDate;
           }
 
           commit.getDiff()
@@ -68,9 +71,9 @@ export default class Git {
                   .then( (arrayPatch) => {
                     arrayPatch.forEach( (patch) => {
                       let stats = patch.lineStats();
-                      this.commits[author].commits_count += 1;
-                      this.commits[author].total_additions += stats.total_additions;
-                      this.commits[author].total_deletions += stats.total_deletions;
+                      authorData.commits_count += 1;
+                      authorData.total_additions += stats.total_additions;
+                      authorData.total_deletions += stats.total_deletions;
                     })
                   })
               })
@@ -78,8 +81,9 @@ export default class Git {
         });
 
         history.on('end', (commits) => {
-          console.log(commits)
-          console.log("end in git");
+          console.log("History walk end.");
+          console.log(commits);
+          showData(commits);
         });
 
         history.on('error', (error) => {
