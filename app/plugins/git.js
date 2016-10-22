@@ -23,7 +23,9 @@ export default class Git {
 
   getAuthorData(author) {
     if (!this.commits.hasOwnProperty(author)){
-      return this.commits[author] = {
+      return this.commits[author.name()] = {
+        name: author.name(),
+        email: author.email(),
         commits_count: 0,
         total_additions: 0,
         total_deletions: 0,

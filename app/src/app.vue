@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <div class="sidebar">
       <ul>
         <li v-for="(repo, index) in repos" 
@@ -12,7 +12,7 @@
     </div>
 
     <div class="content">
-      <STable fields="fields" tableData="commits" ></STable>
+      <STable v-if="dataCollectDone" :fields="fields" :tableData="authorData" ></STable>
     </div>   
   </div>
 
@@ -25,8 +25,9 @@ export default {
   data () {
     return {
       activeIndex: 0,
+      dataCollectDone: false,
       commits: {},
-      fields: ["name",],
+      fields: ["name","email","commits_count","total_add","total_del","first_time","last_time"],
       repos: [
         { 
           name: 'gitlab',
@@ -46,6 +47,11 @@ export default {
   created () {
     this.$git.collectData(this.showData);
   },
+  computed: {
+    authorData () {
+      return this.$git.commits;
+    }
+  },
   methods: {
     isActive (index) {
       return index === this.activeIndex;
@@ -54,21 +60,24 @@ export default {
       this.activeIndex = index;
     },
     showData (commits) {
-      console.log(commits);
-      this.commits = commits;
+      // console.log(commits);
+      // this.commits = commits;
+      this.dataCollectDone = true;
     }
   }
 }
 </script>
 
 <style lang="sass">
+$sidebar-width: 220px;
+
 body {
   margin: 0;
 }
 
 .sidebar {
   position: fixed;
-  width: 220px;
+  width: $sidebar-width;
   top: 0;
   left: 0;
   bottom: 0;
@@ -98,5 +107,17 @@ ul {
       padding-left: 15px;
     }
   }
+}
+
+.container {
+}
+
+.content {
+  position: fixed;
+  padding-left: $sidebar-width;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
 }
 </style>

@@ -9,10 +9,9 @@
     </thead>
     <tbody v-cloak>
       <tr v-for="(item, index) in tableData">
-        <td>
-          1
+        <td v-for="val in item">
+          {{val}}
         </td>
-        <td>2</td>
       <tr>
     <tbody>
   </table>
