@@ -50,6 +50,10 @@ export default class Git {
 
         var count = 0;
         history.on("commit", (commit) => {
+          // exclude merge commit
+          if (commit.parentcount() !== 1)
+            return;
+
           if (++count >= 90) {
             history.emit('end');
             history.end();
