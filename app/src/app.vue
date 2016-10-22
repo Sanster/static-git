@@ -26,7 +26,6 @@ export default {
     return {
       activeIndex: 0,
       dataCollectDone: false,
-      commits: {},
       fields: ["name","email","commits_count","total_add","total_del","first_time","last_time"],
       repos: [
         { 
@@ -49,7 +48,7 @@ export default {
   },
   computed: {
     authorData () {
-      return this.$git.commits;
+      return this.$git.authorDatas;
     }
   },
   methods: {
@@ -59,7 +58,7 @@ export default {
     itemClick (index) {
       this.activeIndex = index;
     },
-    showData (commits) {
+    showData () {
       // console.log(commits);
       // this.commits = commits;
       this.dataCollectDone = true;

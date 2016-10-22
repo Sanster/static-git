@@ -1,4 +1,5 @@
-import NodeGit from 'nodegit'
+import NodeGit from 'nodegit';
+import moment from 'moment';
 
 export default class Git {
   static install (Vue) {
@@ -18,12 +19,12 @@ export default class Git {
 
   init (app) {
     this.app = app;
-    this.commits = {};
+    this.authorDatas = {};
   }
 
   getAuthorData(author) {
-    if (!this.commits.hasOwnProperty(author)){
-      return this.commits[author.name()] = {
+    if (!this.authorDatas.hasOwnProperty(author)){
+      return this.authorDatas[author.name()] = {
         name: author.name(),
         email: author.email(),
         commits_count: 0,
@@ -33,7 +34,7 @@ export default class Git {
         last_commit_time: new Date(2005,1,1),
       };
     } else {
-      return this.commits[author];
+      return this.authorDatas[author];
     }
   }
 
@@ -49,7 +50,7 @@ export default class Git {
         var count = 0;
         history.on("commit", (commit) => {
           if (++count >= 90) {
-            history.emit('end', this.commits);
+            history.emit('end');
             history.end();
             return;
           }
@@ -82,10 +83,16 @@ export default class Git {
             })
         });
 
-        history.on('end', (commits) => {
-          console.log("History walk end.");
-          console.log(commits);
-          showData(commits);
+        history.on('end', () => {
+          console.log("History walk end!")
+          moment.locale("zh-cn");
+
+          for (var key in this.authorDatas) {
+            let data = this.authorDatas[key];
+            data.first_commit_time = moment(data.first_commit_time).format('L');
+            data.last_commit_time = moment(data.first_commit_time).format('L');
+          }
+          showData();
         });
 
         history.on('error', (error) => {
