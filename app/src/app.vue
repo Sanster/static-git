@@ -15,7 +15,7 @@
       <VTable v-if="dataCollectDone" 
               :fields="fields" 
               :tableData="authorData"
-              :perPage="7">
+              :perPage="6">
         
       </VTable>
     </div>   
@@ -31,7 +31,16 @@ export default {
     return {
       activeIndex: 0,
       dataCollectDone: false,
-      fields: ["Name","Email","Commits","Line ++","Line --","First time","Last time"],
+      fields: {
+        "name": "Name",
+        "email": "Email",
+        "commits_count": "Commits",
+        "total_additions": "Line ++",
+        "total_deletions": "Line --",
+        "activeDays": "Active Day",
+        "first_commit_time": "First time",
+        "last_commit_time": "Last time",
+      },
       repos: [
         { 
           name: 'gitlab',

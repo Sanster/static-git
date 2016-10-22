@@ -1,4 +1,4 @@
-t<template>
+<template>
   <table class="vtable">
     <thead>
       <tr>
@@ -8,13 +8,18 @@ t<template>
       </tr>
     </thead>
     <tbody v-cloak>
-      <tr v-for="(item, index) in pageData">
-        <td v-for="val in item">
-          {{val}}
+      <tr v-for="data in pageDatas">
+        <td v-for="(field, key) in fields">
+          <template v-if="Array.isArray(data[key])">
+            {{data[key].length}}
+          </template>
+          <template v-else>
+            {{data[key]}}
+          </template>
         </td>
       <tr>
-      <template v-if="pageData.length < perPage">
-        <tr v-for="n in (perPage - pageData.length)">
+      <template v-if="pageDatas.length < perPage">
+        <tr v-for="n in (perPage - pageDatas.length)">
           <td v-for="j in fields.length"></td>
         </tr>
       </template> 
@@ -43,7 +48,7 @@ export default {
     }
   },
   computed: {
-    pageData () {
+    pageDatas () {
       return this.tableData.slice(this.currentPage * this.perPage, (this.currentPage + 1) * this.perPage);
     },
     totalPage () {

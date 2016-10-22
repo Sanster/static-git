@@ -6,7 +6,6 @@ export default class Git {
     Vue.mixin({
       beforeCreate () {
         if (this.$options.git) {
-          console.log("installed")
           Vue.prototype.$git = this.$options.git;
           this.$git.init(this);
         }
@@ -21,22 +20,39 @@ export default class Git {
     this.app = app;
     this._authorDatas = {};
     this.authorDatas = [];
+    moment.locale("zh-cn");
   }
 
-  getAuthorData(author) {
-    if (!this._authorDatas.hasOwnProperty(author)){
-      return this._authorDatas[author.name()] = {
-        name: author.name(),
+  _getAuthorData (author) {
+    let authorName = author.name();
+
+    if (!this._authorDatas.hasOwnProperty(authorName)) {
+      this._authorDatas[authorName] = {
+        name: authorName,
         email: author.email(),
         commits_count: 0,
         total_additions: 0,
         total_deletions: 0,
         first_commit_time: new Date(2030,1,1),
         last_commit_time: new Date(2005,1,1),
+        dates: [],
+        activeDays: []
       };
-    } else {
-      return this._authorDatas[author];
-    }
+    } 
+    return this._authorDatas[authorName];
+  }
+
+  _getUniqueDateByDay (dates) {
+    var keys = {}, result = [];
+     for(var i = 0, l = dates.length; i < l; ++i){
+        let date = moment(dates[i]).format('L');
+        if(keys.hasOwnProperty(date)) {
+          continue;
+        }
+        result.push(date);
+        keys[date] = 1;
+     }
+    return result;
   }
 
   collectData (showData) {
@@ -62,7 +78,9 @@ export default class Git {
 
           let commitDate = commit.date();
           let author = commit.author();
-          let authorData = this.getAuthorData(author);
+          let authorData = this._getAuthorData(author);
+
+          authorData.dates.push(commitDate);
 
           if (authorData.first_commit_time > commitDate) {
             authorData.first_commit_time = commitDate;
@@ -90,14 +108,15 @@ export default class Git {
 
         history.on('end', () => {
           console.log("History walk end!")
-          moment.locale("zh-cn");
 
           for (var key in this._authorDatas) {
             let data = this._authorDatas[key];
             data.first_commit_time = moment(data.first_commit_time).format('L');
             data.last_commit_time = moment(data.first_commit_time).format('L');
+            data.activeDays = this._getUniqueDateByDay(data.dates);
             this.authorDatas.push(data);
           }
+          
           showData();
         });
 
