@@ -12,21 +12,26 @@
     </div>
 
     <div class="content">
-      <STable v-if="dataCollectDone" :fields="fields" :tableData="authorData" ></STable>
+      <VTable v-if="dataCollectDone" 
+              :fields="fields" 
+              :tableData="authorData"
+              :perPage="7">
+        
+      </VTable>
     </div>   
   </div>
 
 </template>
 
 <script>
-import STable from './components/STable.vue';
+import VTable from './components/VTable.vue';
 
 export default {
   data () {
     return {
       activeIndex: 0,
       dataCollectDone: false,
-      fields: ["name","email","commits_count","total_add","total_del","first_time","last_time"],
+      fields: ["Name","Email","Commits","Line ++","Line --","First time","Last time"],
       repos: [
         { 
           name: 'gitlab',
@@ -41,7 +46,7 @@ export default {
     }
   },
   components: {
-    STable,
+    VTable,
   },
   created () {
     this.$git.collectData(this.showData);
@@ -81,29 +86,29 @@ body {
   left: 0;
   bottom: 0;
   border-right: 1px solid #e7e7e7;
-}
 
-ul {
-  padding: 0;
-  margin: 0;
-  list-style-type: none;
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
 
-  .list-group-item {
-    &:hover {
-      background: #e7e7e7;
-    }
+    .list-group-item {
+      &:hover {
+        background: #e7e7e7;
+      }
 
-    height: 40px;
-    line-height: 40px;
-    background: #f8f8f8;
-    border-bottom: 1px solid #e7e7e7;
+      height: 40px;
+      line-height: 40px;
+      background: #f8f8f8;
+      border-bottom: 1px solid #e7e7e7;
 
-    &.active {
-      border-left: 4px solid #86bc63;
-    }
+      &.active {
+        border-left: 4px solid #86bc63;
+      }
 
-    a {
-      padding-left: 15px;
+      a {
+        padding-left: 15px;
+      }
     }
   }
 }
@@ -113,10 +118,11 @@ ul {
 
 .content {
   position: fixed;
-  padding-left: $sidebar-width;
+  margin-left: $sidebar-width;
   left: 0;
   top: 0;
   right: 0;
   bottom: 0;
+  overflow-x: auto;
 }
 </style>

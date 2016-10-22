@@ -19,12 +19,13 @@ export default class Git {
 
   init (app) {
     this.app = app;
-    this.authorDatas = {};
+    this._authorDatas = {};
+    this.authorDatas = [];
   }
 
   getAuthorData(author) {
-    if (!this.authorDatas.hasOwnProperty(author)){
-      return this.authorDatas[author.name()] = {
+    if (!this._authorDatas.hasOwnProperty(author)){
+      return this._authorDatas[author.name()] = {
         name: author.name(),
         email: author.email(),
         commits_count: 0,
@@ -34,7 +35,7 @@ export default class Git {
         last_commit_time: new Date(2005,1,1),
       };
     } else {
-      return this.authorDatas[author];
+      return this._authorDatas[author];
     }
   }
 
@@ -87,10 +88,11 @@ export default class Git {
           console.log("History walk end!")
           moment.locale("zh-cn");
 
-          for (var key in this.authorDatas) {
-            let data = this.authorDatas[key];
+          for (var key in this._authorDatas) {
+            let data = this._authorDatas[key];
             data.first_commit_time = moment(data.first_commit_time).format('L');
             data.last_commit_time = moment(data.first_commit_time).format('L');
+            this.authorDatas.push(data);
           }
           showData();
         });
