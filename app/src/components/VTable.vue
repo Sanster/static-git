@@ -5,6 +5,10 @@
         <th v-for="(field, key) in fields"
             @click="sortByField(key)">
           {{field}}
+          <div class="sort-icon">
+            <icon name="caret-down" class="sort-icon-down"></icon>
+            <icon name="caret-up" class="sort-icon-up"></icon>
+          </div>
         </th>
       </tr>
     </thead>
@@ -100,7 +104,6 @@ export default {
         // Save the copy of tableData
         this.sortedDataCache[field] = this.tableData.slice().sort(this.compareField(field))
       }
-      console.log(this.sortedDataCache)
       this.sortField = field
     },
     isActive (page) {
@@ -130,6 +133,20 @@ export default {
     color: white;
     cursor: pointer;
     border-right: 1px solid #ddd;
+
+    .sort-icon {
+      display: inline-block;
+
+      & > svg {
+        position: relative;
+        top: 3px;
+      }
+
+      .sort-icon-up {
+        position: relative;
+        right: 3px;
+      }
+    }
   }
 
   th, td {

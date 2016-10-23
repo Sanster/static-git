@@ -31,10 +31,12 @@
     "eslint-plugin-babel": "^3.3.0",
     "eslint-plugin-html": "^1.5.4",
     "eslint-plugin-vue": "^0.1.1",
+    "file-loader": "^0.9.0",
     "node-sass": "^3.10.1",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
     "svg-inline-loader": "^0.7.1",
+    "url-loader": "^0.5.7",
     "vue-loader": "^9.7.0",
     "webpack": "^2.1.0-beta.25",
     "webpack-node-externals": "^1.5.4"
@@ -44,6 +46,7 @@
     "moment": "^2.15.1",
     "nodegit": "^0.16.0",
     "vue": "^2.0.3",
+    "vue-awesome": "^2.0.2",
     "vuex": "^2.0.0"
   }
 }

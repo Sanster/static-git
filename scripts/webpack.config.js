@@ -36,8 +36,8 @@ module.exports = {
         loader: 'style!css!sass'
       },
       {
-        test: /\.svg$/,
-        loaders: ['svg-inline']
+        test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)/,
+        loader: 'url'
       }
     ]
   }
