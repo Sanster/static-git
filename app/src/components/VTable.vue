@@ -19,11 +19,10 @@
           </template>
         </td>
       <tr>
-      <template v-if="pageData.length < perPage">
-        <tr v-for="n in (perPage - pageData.length)">
-          <td v-for="j in fields.length"></td>
-        </tr>
-      </template> 
+      <tr v-for="n in emptyRow"
+          class="empty-row">
+        <td v-for="j in Object.keys(fields).length"></td>
+      </tr>
     </tbody>
     <tfoot class="vtable-pagination">
       <tr>
@@ -52,7 +51,8 @@ export default {
       currentPage: 0,
       sortedDataCache: {},
       initSortField: 'Default',
-      sortField: 'Default'
+      sortField: 'Default',
+      emptyRow: 0
     }
   },
   computed: {
@@ -64,8 +64,10 @@ export default {
         this.sortedDataCache[this.initSortField] = this.tableData
       }
 
-      return this.sortedDataCache[this.sortField].slice(this.currentPage * this.perPage,
+      const data = this.sortedDataCache[this.sortField].slice(this.currentPage * this.perPage,
                                                         (this.currentPage + 1) * this.perPage)
+      this.emptyRow =  this.perPage - data.length
+      return data
     }
   },
   methods: {
@@ -142,7 +144,10 @@ export default {
   td {
     height: 16px;
   }
-
+  
+  // .empty-row td {
+  //   border-bottom: 0px;
+  // }
 }
 
 .vtable-pagination {

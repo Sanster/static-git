@@ -1,13 +1,14 @@
 {
   "name": "static-git",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "git statistics gui",
   "main": "app/index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development node tasks/dev.js",
     "watch": "webpack --config scripts/webpack.config.js --watch",
     "start": "cross-env NODE_ENV=development electron app/",
-    "lint": "./node_modules/.bin/eslint app --ext .js,.vue"
+    "lint": "./node_modules/.bin/eslint app --ext .js,.vue",
+    "pack": "node tasks/pack.js"
   },
   "author": "",
   "license": "ISC",
@@ -23,6 +24,7 @@
     "css-loader": "^0.25.0",
     "d3": "^4.2.7",
     "electron": "^1.4.3",
+    "electron-packager": "^8.1.0",
     "electron-rebuild": "^1.2.1",
     "eslint": "^3.8.1",
     "eslint-config-vue": "^1.1.0",
