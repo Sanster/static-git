@@ -3,11 +3,11 @@
     <thead>
       <tr>
         <th v-for="(field, key) in fields"
-            @click="sortByField(key)">
-          {{field}}
-          <div class="sort-icon">
-            <icon name="caret-down" class="sort-icon-down"></icon>
-            <icon name="caret-up" class="sort-icon-up"></icon>
+            @click="sortByKey(key)">
+          <a href="#">{{field}}</a>
+          <div class="sort-icon" v-show="key == sortKey">
+            <icon name="caret-down" class="sort-icon-down" :class="{ 'active' : downSort }"></icon>
+            <icon name="caret-up" class="sort-icon-up" :class="{ 'active' : !downSort }"></icon>
           </div>
         </th>
       </tr>
@@ -54,9 +54,10 @@ export default {
     return {
       currentPage: 0,
       sortedDataCache: {},
-      initSortField: 'Default',
-      sortField: 'Default',
-      emptyRow: 0
+      initSortKey: 'Default',
+      sortKey: 'Default',
+      emptyRow: 0,
+      downSort: true
     }
   },
   computed: {
@@ -64,15 +65,17 @@ export default {
       return Math.ceil(this.tableData.length / this.perPage)
     },
     pageData () {
-      if (!this.sortedDataCache.hasOwnProperty(this.initSortField)) {
-        this.sortedDataCache[this.initSortField] = this.tableData
-      }
+      const cacheKey = this.cacheKey()
 
-      const data = this.sortedDataCache[this.sortField].slice(this.currentPage * this.perPage,
+      if (!this.sortedDataCache.hasOwnProperty(cacheKey)) {
+        this.sortedDataCache[cacheKey] = this.tableData
+      }
+      const data = this.sortedDataCache[cacheKey].slice(this.currentPage * this.perPage,
                                                         (this.currentPage + 1) * this.perPage)
       this.emptyRow =  this.perPage - data.length
       return data
-    }
+    },
+
   },
   methods: {
     loadPage (page) {
@@ -80,31 +83,48 @@ export default {
         this.currentPage = page
       }
     },
-    compareField (field) {
-      return function (authorData1, authorData2) {
-        let compareVal1 = authorData1[field]
-        let compareVal2 = authorData2[field]
+    compareKey (key) {
+      const downSort = this.downSort
 
-        if (Array.isArray(authorData1[field])) {
-          compareVal1 = authorData1[field].length
-          compareVal2 = authorData2[field].length
+      return function (authorData1, authorData2) {
+        let compareVal1 = authorData1[key]
+        let compareVal2 = authorData2[key]
+
+        if (Array.isArray(authorData1[key])) {
+          compareVal1 = authorData1[key].length
+          compareVal2 = authorData2[key].length
         }
 
         if (compareVal1 > compareVal2) {
-          return -1
+          return downSort ? -1 : 1 
         } else if (compareVal1 < compareVal2) {
-          return 1
+          return downSort ? 1 : -1 
         }
 
         return 0
       }
     },
-    sortByField (field) {
-      if (!this.sortedDataCache.hasOwnProperty(field)) {
-        // Save the copy of tableData
-        this.sortedDataCache[field] = this.tableData.slice().sort(this.compareField(field))
+    sortByKey (key) {
+      if (this.sortKey === key) {
+        this.downSort = !this.downSort
+      } else {
+        this.downSort = true
+        this.sortKey = key
       }
-      this.sortField = field
+
+      const cacheKey = this.cacheKey()
+      
+      if (!this.sortedDataCache.hasOwnProperty(cacheKey)) {
+        // Save the copy of tableData
+        this.sortedDataCache[cacheKey] = this.tableData.slice().sort(this.compareKey(key))
+      }
+    },
+    cacheKey () {
+      if (this.downSort) {
+        return this.sortKey + '-down-sort'
+      } else {
+        return this.sortKey + '-up-sort'
+      }
     },
     isActive (page) {
       return this.currentPage === page
@@ -133,6 +153,12 @@ export default {
     color: white;
     cursor: pointer;
     border-right: 1px solid #ddd;
+    -webkit-user-select: none;
+
+    > a {
+      text-decoration: none;
+      color: #fff;
+    }
 
     .sort-icon {
       display: inline-block;
@@ -145,6 +171,10 @@ export default {
       .sort-icon-up {
         position: relative;
         right: 3px;
+      }
+
+      .active {
+        color: #000;
       }
     }
   }
