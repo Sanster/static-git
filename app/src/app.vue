@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import VTable from './components/VTable.vue';
+import VTable from './components/VTable.vue'
 
 export default {
   data () {
@@ -32,50 +32,50 @@ export default {
       activeIndex: 0,
       dataCollectDone: false,
       fields: {
-        "name": "Name",
-        "email": "Email",
-        "commits_count": "Commits",
-        "total_additions": "Line ++",
-        "total_deletions": "Line --",
-        "activeDays": "Active Day",
-        "first_commit_time": "First time",
-        "last_commit_time": "Last time",
+        'name': 'Name',
+        'email': 'Email',
+        'commits_count': 'Commits',
+        'total_additions': 'Line ++',
+        'total_deletions': 'Line --',
+        'activeDays': 'Active Day',
+        'first_commit_time': 'First time',
+        'last_commit_time': 'Last time'
       },
       repos: [
-        { 
-          name: 'gitlab',
+        {
+          name: 'gitlab'
         },
-        { 
-          name: 'static-git',
+        {
+          name: 'static-git'
         },
-        { 
-          name: 'starbucks',
+        {
+          name: 'starbucks'
         }
       ]
     }
   },
   components: {
-    VTable,
+    VTable
   },
   created () {
-    this.$git.collectData(this.showData);
+    this.$git.collectData(this.showData)
   },
   computed: {
     authorData () {
-      return this.$git.authorDatas;
+      return this.$git.authorDatas
     }
   },
   methods: {
     isActive (index) {
-      return index === this.activeIndex;
+      return index === this.activeIndex
     },
     itemClick (index) {
-      this.activeIndex = index;
+      this.activeIndex = index
     },
     showData () {
       // console.log(commits);
       // this.commits = commits;
-      this.dataCollectDone = true;
+      this.dataCollectDone = true
     }
   }
 }

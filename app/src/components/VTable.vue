@@ -48,44 +48,45 @@ export default {
       currentPage: 0,
       sortedDataCache: {},
       initSortField: 'Default',
-      sortField: 'Default',
+      sortField: 'Default'
     }
   },
   computed: {
     totalPage () {
-      return Math.ceil(this.tableData.length / this.perPage);
+      return Math.ceil(this.tableData.length / this.perPage)
     },
     pageData () {
       if (!this.sortedDataCache.hasOwnProperty(this.initSortField)) {
-        this.sortedDataCache[this.initSortField] = this.tableData;
+        this.sortedDataCache[this.initSortField] = this.tableData
       }
-      
-      return this.sortedDataCache[this.sortField].slice( this.currentPage * this.perPage, 
-                                                        (this.currentPage + 1) * this.perPage);
-    },
+
+      return this.sortedDataCache[this.sortField].slice(this.currentPage * this.perPage,
+                                                        (this.currentPage + 1) * this.perPage)
+    }
   },
   methods: {
     loadPage (page) {
-      if ( page !== this.currentPage ){
-        this.currentPage = page;
+      if (page !== this.currentPage) {
+        this.currentPage = page
       }
     },
     compareField (field) {
       return function (authorData1, authorData2) {
-        let compareVal1 = authorData1[field];
-        let compareVal2 = authorData2[field];
+        let compareVal1 = authorData1[field]
+        let compareVal2 = authorData2[field]
 
-        if (Array.isArray(authorData1[field])){
-          compareVal1 = authorData1[field].length;
-          compareVal2 = authorData2[field].length;
-        } 
+        if (Array.isArray(authorData1[field])) {
+          compareVal1 = authorData1[field].length
+          compareVal2 = authorData2[field].length
+        }
 
-        if (compareVal1 > compareVal2)
-          return -1;
-        else (compareVal1 < compareVal2)
-          return 1;
+        if (compareVal1 > compareVal2) {
+          return -1
+        } else if (compareVal1 < compareVal2) {
+          return 1
+        }
 
-        return 0;
+        return 0
       }
     },
     sortByField (field) {
@@ -94,7 +95,7 @@ export default {
         this.sortedDataCache[field] = this.tableData.slice().sort(this.compareField(field))
       }
       console.log(this.sortedDataCache)
-      this.sortField = field;
+      this.sortField = field
     }
   }
 }

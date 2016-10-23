@@ -1,6 +1,5 @@
 var path = require('path')
-var webpack = require('webpack')
-var nodeExternals = require('webpack-node-externals');
+var nodeExternals = require('webpack-node-externals')
 
 module.exports = {
   entry: path.resolve(__dirname, '../app/src/main.js'),
@@ -11,11 +10,11 @@ module.exports = {
   target: 'electron',
   externals: [
     nodeExternals({
-      'modulesDir' : path.resolve(__dirname, '../node_modules')
+      'modulesDir': path.resolve(__dirname, '../node_modules')
     })
   ],
   resolveLoader: {
-    modules: ['node_modules', __dirname + '../node_modules'],
+    modules: ['node_modules', path.resolve(__dirname, '../node_modules')]
   },
   module: {
     loaders: [
@@ -30,11 +29,11 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: 'style!css',
+        loader: 'style!css'
       },
       {
         test: /\.sass$/,
-        loader: 'style!css!sass',
+        loader: 'style!css!sass'
       },
       {
         test: /\.svg$/,
