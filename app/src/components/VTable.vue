@@ -28,7 +28,11 @@
     <tfoot class="vtable-pagination">
       <tr>
           <ul>
-            <li v-for="(n, index) in totalPage" @click="loadPage(index)"><a href="#">{{n}}</a></li>
+            <li v-for="(n, index) in totalPage" 
+                @click="loadPage(index)"
+                :class="{ 'active': isActive(index) }">
+                <a href="#">{{n}}</a>
+            </li>
           </ul>
       </tr>
     </tfoot>
@@ -96,6 +100,9 @@ export default {
       }
       console.log(this.sortedDataCache)
       this.sortField = field
+    },
+    isActive (page) {
+      return this.currentPage === page
     }
   }
 }
@@ -112,7 +119,7 @@ export default {
     border-right: 1px solid #ddd;
 
     tr:hover {
-      background-color: #f5f5f5
+      background-color: #f5f5f5;
     }
   }
   
@@ -157,6 +164,10 @@ export default {
 
       &:hover {
         background: #e7e7e7;
+      }
+
+      &.active {
+        background: #f5f5f5;
       }
     }
   }
