@@ -12,12 +12,18 @@
     </div>
 
     <div class="content">
+      <h1>List of author</h1>
       <VTable v-if="dataCollectDone" 
               :fields="fields" 
               :tableData="authorData"
               :perPage="6">
         
       </VTable>
+
+      <h1>Commits by Month</h1>
+      <MonthCommits v-if="dataCollectDone">
+        
+      </MonthCommits>
     </div>   
   </div>
 
@@ -25,6 +31,7 @@
 
 <script>
 import VTable from './components/VTable.vue'
+import MonthCommits from './components/MonthCommits.vue'
 
 export default {
   data () {
@@ -55,7 +62,8 @@ export default {
     }
   },
   components: {
-    VTable
+    VTable,
+    MonthCommits
   },
   created () {
     this.$git.collectData(this.showData)

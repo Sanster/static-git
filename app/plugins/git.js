@@ -17,6 +17,9 @@ export default class Git {
     this.app = app
     this._authorDatas = {}
     this.authorDatas = []
+    this._monthDatas = {}
+    this.first_commit_date = new Date(2005, 1, 1)
+    this.last_commit_date = new Date(2030, 1, 1)
     moment.locale('zh-cn')
   }
 
@@ -80,6 +83,14 @@ export default class Git {
           const authorData = this._getAuthorData(author)
 
           authorData.dates.push(commitDate)
+          console.log(commitDate.getDate())
+          if (this.first_commit_date > commitDate) {
+            this.first_commit_date = commitDate
+          }
+
+          if (this.last_commit_date < commitDate) {
+            this.last_commit_date = commitDate
+          }
 
           if (authorData.first_commit_time > commitDate) {
             authorData.first_commit_time = commitDate
