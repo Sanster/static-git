@@ -45,14 +45,16 @@ export default class AuthorData {
       this.commitsCountByDay[year] = this._getInitCommitsCount()
     }
 
+    this.commitsCountByDay[year]["count"] += 1
+    this.commitsCountByDay[year][month]["count"] += 1
     this.commitsCountByDay[year][month][day] += 1
   }
 
   _getInitCommitsCount () {
-    const commitsCountByDay = {}
+    const commitsCountByDay = { "count": 0 }
 
     for(var month=0; month<12; ++month) {
-      var dayCount = {}
+      var dayCount = { "count": 0 }
       for(var day=0; day<31; ++day) {
         dayCount[day] = 0
       }

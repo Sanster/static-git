@@ -21,7 +21,8 @@
       </VTable>
 
       <h1>Commits by Month</h1>
-      <MonthCommits v-if="dataCollectDone">
+      <MonthCommits v-if="dataCollectDone"
+                    :barChartData="authorData">
         
       </MonthCommits>
     </div>   

@@ -18,7 +18,18 @@ export default {
     barClick (event, data) {
       console.log(event)
       console.log(data[0]._index)
-      console.log('sadfasdfasdf')
+    },
+    monthData () {
+      const data = {}
+      const year = '2016'
+      data[year] = new Array(12).fill(0)
+      console.log(data)
+      for(var i=0, l=this.barChartData.length; i<l; ++i){
+        for(var j=0; j<12; ++j){
+          data[year][j] += this.barChartData[i].commitsCountByDay[year][j].count
+        }
+      }
+      return data[year]
     }
   },
   mounted () {
@@ -30,7 +41,7 @@ export default {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         datasets: [{
           label: 'Commits',
-          data: [12, 19, 3, 5, 2, 3, 34, 25, 9, 14, 11, 19],
+          data: this.monthData(),
           backgroundColor: 'rgba(75, 192, 192, 0.8)',
           // borderColor: 'rgba(75, 192, 192, 0.2)',
         }]
