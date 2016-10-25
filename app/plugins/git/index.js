@@ -1,5 +1,6 @@
 import NodeGit from 'nodegit'
 import moment from 'moment'
+import AuthorData from './AuthorData.js'
 
 export default class Git {
   static install (Vue) {
@@ -18,8 +19,8 @@ export default class Git {
     this._authorDatas = {}
     this.authorDatas = []
     this._monthDatas = {}
-    this.first_commit_date = new Date(2005, 1, 1)
-    this.last_commit_date = new Date(2030, 1, 1)
+    this.firstCommitDate = new Date(2005, 1, 1)
+    this.lastCommitDate = new Date(2030, 1, 1)
     moment.locale('zh-cn')
   }
 
@@ -27,33 +28,9 @@ export default class Git {
     const authorName = author.name()
 
     if (!this._authorDatas.hasOwnProperty(authorName)) {
-      this._authorDatas[authorName] = {
-        name: authorName,
-        email: author.email(),
-        commits_count: 0,
-        total_additions: 0,
-        total_deletions: 0,
-        first_commit_time: new Date(2030, 1, 1),
-        last_commit_time: new Date(2005, 1, 1),
-        dates: [],
-        activeDays: []
-      }
+      this._authorDatas[authorName] = new AuthorData(author)
     }
     return this._authorDatas[authorName]
-  }
-
-  _getUniqueDateByDay (dates) {
-    var keys = {}
-    var result = []
-    for (var i = 0, l = dates.length; i < l; ++i) {
-      const date = moment(dates[i]).format('L')
-      if (keys.hasOwnProperty(date)) {
-        continue
-      }
-      result.push(date)
-      keys[date] = 1
-    }
-    return result
   }
 
   collectData (showData) {
@@ -83,21 +60,14 @@ export default class Git {
           const authorData = this._getAuthorData(author)
 
           authorData.dates.push(commitDate)
-          console.log(commitDate.getDate())
-          if (this.first_commit_date > commitDate) {
-            this.first_commit_date = commitDate
+          authorData.saveCommitDate(commitDate)
+
+          if (this.firstCommitDate > commitDate) {
+            this.firstCommitDate = commitDate
           }
 
-          if (this.last_commit_date < commitDate) {
-            this.last_commit_date = commitDate
-          }
-
-          if (authorData.first_commit_time > commitDate) {
-            authorData.first_commit_time = commitDate
-          }
-
-          if (authorData.last_commit_time < commitDate) {
-            authorData.last_commit_time = commitDate
+          if (this.lastCommitDate < commitDate) {
+            this.lastCommitDate = commitDate
           }
 
           commit.getDiff()
@@ -123,10 +93,10 @@ export default class Git {
             const data = this._authorDatas[key]
             data.first_commit_time = moment(data.first_commit_time).format('L')
             data.last_commit_time = moment(data.first_commit_time).format('L')
-            data.activeDays = this._getUniqueDateByDay(data.dates)
+            data.activeDays = data.getActiveDays()
             this.authorDatas.push(data)
           }
-
+          console.log(this.authorDatas)
           showData()
         })
 

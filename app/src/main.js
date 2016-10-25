@@ -7,7 +7,7 @@ import store from './store'
 // Vue.component('icon', Icon)
 
 // my own plugin
-import Git from '../plugins/git.js'
+import Git from '../plugins/git'
 Vue.use(Git)
 const git = new Git()
 
