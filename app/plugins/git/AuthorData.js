@@ -40,22 +40,22 @@ export default class AuthorData {
     const year = commitDate.getFullYear()
     const month = commitDate.getMonth()
     const day = commitDate.getDate()
-    
+
     if (!this.commitsCountByDay.hasOwnProperty(year)) {
       this.commitsCountByDay[year] = this._getInitCommitsCount()
     }
 
-    this.commitsCountByDay[year]["count"] += 1
-    this.commitsCountByDay[year][month]["count"] += 1
+    this.commitsCountByDay[year]['count'] += 1
+    this.commitsCountByDay[year][month]['count'] += 1
     this.commitsCountByDay[year][month][day] += 1
   }
 
   _getInitCommitsCount () {
-    const commitsCountByDay = { "count": 0 }
+    const commitsCountByDay = { 'count': 0 }
 
-    for(var month=0; month<12; ++month) {
-      var dayCount = { "count": 0 }
-      for(var day=0; day<31; ++day) {
+    for (var month = 0; month < 12; ++month) {
+      var dayCount = { 'count': 0 }
+      for (var day = 0; day < 31; ++day) {
         dayCount[day] = 0
       }
       commitsCountByDay[month] = dayCount

@@ -72,9 +72,9 @@ export default {
       }
       const data = this.sortedDataCache[cacheKey].slice(this.currentPage * this.perPage,
                                                         (this.currentPage + 1) * this.perPage)
-      this.emptyRow =  this.perPage - data.length
+      this.emptyRow = this.perPage - data.length
       return data
-    },
+    }
 
   },
   methods: {
@@ -96,9 +96,9 @@ export default {
         }
 
         if (compareVal1 > compareVal2) {
-          return downSort ? -1 : 1 
+          return downSort ? -1 : 1
         } else if (compareVal1 < compareVal2) {
-          return downSort ? 1 : -1 
+          return downSort ? 1 : -1
         }
 
         return 0
@@ -113,7 +113,7 @@ export default {
       }
 
       const cacheKey = this.cacheKey()
-      
+
       if (!this.sortedDataCache.hasOwnProperty(cacheKey)) {
         // Save the copy of tableData
         this.sortedDataCache[cacheKey] = this.tableData.slice().sort(this.compareKey(key))

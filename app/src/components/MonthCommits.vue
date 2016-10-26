@@ -7,7 +7,7 @@ import Chart from 'chart.js'
 
 export default {
   props: [
-    'barChartData',
+    'barChartData'
   ],
   data () {
     return {
@@ -24,8 +24,8 @@ export default {
       const year = '2016'
       data[year] = new Array(12).fill(0)
       console.log(data)
-      for(var i=0, l=this.barChartData.length; i<l; ++i){
-        for(var j=0; j<12; ++j){
+      for (var i = 0, l = this.barChartData.length; i < l; ++i) {
+        for (var j = 0; j < 12; ++j) {
           data[year][j] += this.barChartData[i].commitsCountByDay[year][j].count
         }
       }
@@ -35,14 +35,14 @@ export default {
   mounted () {
     var ctx = document.getElementById('month-commits')
 
-    var myChart = new Chart(ctx, {
+    new Chart(ctx, {
       type: 'bar',
       data: {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         datasets: [{
           label: 'Commits',
           data: this.monthData(),
-          backgroundColor: 'rgba(75, 192, 192, 0.8)',
+          backgroundColor: 'rgba(75, 192, 192, 0.8)'
           // borderColor: 'rgba(75, 192, 192, 0.2)',
         }]
       },
@@ -51,10 +51,10 @@ export default {
         onClick: this.barClick,
         title: {
           display: true,
-          text: 'Month commits',
+          text: 'Month commits'
         },
         legend: {
-          display: false,
+          display: false
         },
         scales: {
           gridLines: {
