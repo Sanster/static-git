@@ -7,7 +7,7 @@
     "dev": "cross-env NODE_ENV=development node tasks/dev.js",
     "watch": "webpack --config scripts/webpack.config.js --watch",
     "start": "cross-env NODE_ENV=development electron app/",
-    "lint": "./node_modules/.bin/eslint app --ext .js,.vue",
+    "lint": "./node_modules/.bin/eslint app --ext .js,.vue || true",
     "pack": "node tasks/pack.js"
   },
   "author": "",
