@@ -2,7 +2,7 @@
 <div>
   <canvas id='month-commits' width='500' height='350'></canvas>
   <div>
-    {{monthData[selectedMonth]}} Commits this month.
+    {{monthCommitsCount}} Commits this month.
     <h3>Top 5</h3>
     <ul>
       <li v-for="n in 5">
@@ -23,9 +23,15 @@ export default {
   ],
   data () {
     return {
+      yearData: {},
       monthData: [],
       selectedYear: '2016',
       selectedMonth: 0
+    }
+  },
+  computed: {
+    monthCommitsCount () {
+      return this.yearData[this.selectedYear][this.selectedMonth]
     }
   },
   methods: {
@@ -35,7 +41,7 @@ export default {
         this.barChartData.sort(this.sortByMonthCommits)
       }
     },
-    calMonthData () {
+    calYearData () {
       const data = {}
       const year = '2016'
       data[year] = new Array(12).fill(0)
@@ -45,7 +51,7 @@ export default {
           data[year][month] += this.barChartData[i].getMonthCommitsCount(year, month)
         }
       }
-      this.monthData = data[year]
+     this.yearData[year] = data[year]
     },
     sortByMonthCommits (authorData1, authorData2) {
       const commitsCount1 = authorData1.getMonthCommitsCount(this.selectedYear, this.selectedMonth)
@@ -63,8 +69,10 @@ export default {
       return this.barChartData[index].getMonthCommitsCount(this.selectedYear, this.selectedMonth)
     }
   },
+  created () {
+    this.calYearData()
+  },
   mounted () {
-    this.calMonthData()
     var ctx = document.getElementById('month-commits')
 
     new Chart(ctx, {
@@ -73,7 +81,7 @@ export default {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         datasets: [{
           label: 'Commits',
-          data: this.monthData,
+          data: this.yearData[this.selectedYear],
           backgroundColor: 'rgba(75, 192, 192, 0.8)'
           // borderColor: 'rgba(75, 192, 192, 0.2)',
         }]
