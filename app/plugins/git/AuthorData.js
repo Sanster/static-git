@@ -28,6 +28,14 @@ export default class AuthorData {
     return result
   }
 
+  getMonthCommitsCount (year, month) {
+    return this.commitsCountByDay[year][month].count
+  }
+
+  getYearCommitsCount (year) {
+    return this.commitsCountByDay[year].count
+  }
+
   saveCommitDate (commitDate) {
     if (this.first_commit_time > commitDate) {
       this.first_commit_time = commitDate

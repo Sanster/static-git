@@ -7,7 +7,7 @@
     <ul>
       <li v-for="n in 5">
         {{barChartData[n].name}}
-        {{authorMonthCommitsCount(n)}} commits this month.
+        {{authorMonthCommitsCount(n)}} commits.
       </li>
     </ul>
   </div>
@@ -32,7 +32,7 @@ export default {
     barClick (event, data) {
       if (data.length !== 0) {
         this.selectedMonth = data[0]._index
-        this.barChartData.sort(this.sortByMonthCommits('2016', this.selectedMonth))
+        this.barChartData.sort(this.sortByMonthCommits)
       }
     },
     calMonthData () {
@@ -41,16 +41,26 @@ export default {
       data[year] = new Array(12).fill(0)
 
       for (var i = 0, l = this.barChartData.length; i < l; ++i) {
-        for (var j = 0; j < 12; ++j) {
-          data[year][j] += this.barChartData[i].commitsCountByDay[year][j].count
+        for (var month = 0; month < 12; ++month) {
+          data[year][month] += this.barChartData[i].getMonthCommitsCount(year, month)
         }
       }
       this.monthData = data[year]
     },
-    sortByMonthCommits () {
+    sortByMonthCommits (authorData1, authorData2) {
+      const commitsCount1 = authorData1.getMonthCommitsCount(this.selectedYear, this.selectedMonth)
+      const commitsCount2 = authorData2.getMonthCommitsCount(this.selectedYear, this.selectedMonth)
+
+      if (commitsCount1 > commitsCount2) {
+        return -1
+      } else if (commitsCount1 < commitsCount2) {
+        return 1
+      }
+
+      return 0
     },
     authorMonthCommitsCount (index) {
-      return this.barChartData[index].commitsCountByDay[this.selectedYear][this.selectedMonth].count
+      return this.barChartData[index].getMonthCommitsCount(this.selectedYear, this.selectedMonth)
     }
   },
   mounted () {
