@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import app from './app.vue'
 import store from './store'
+
 // import Icon from 'vue-awesome/components/Icon.vue'
 // import 'vue-awesome/icons'
 

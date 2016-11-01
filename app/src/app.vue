@@ -1,11 +1,18 @@
 <template>
   <div class="container">
+    <div class="header">
+      <ul>
+        <li>Author Data</li>
+        <li>Month Commits</li>
+      </ul>
+    </div>
+
     <div class="sidebar">
       <ul>
-        <li v-for="(repo, index) in repos" 
-            class="list-group-item" 
+        <li v-for="(repo, index) in repos"
+            class="list-group-item"
             :class="{ 'active': isActive(index) }"
-            @click="itemClick(index)"> 
+            @click="itemClick(index)">
           <a> {{repo.name}} </a>
         </li>
       </ul>
@@ -13,19 +20,19 @@
 
     <div class="content">
       <h1>List of author</h1>
-      <VTable v-if="dataCollectDone" 
-              :fields="fields" 
+      <VTable v-if="dataCollectDone"
+              :fields="fields"
               :tableData="authorData"
               :perPage="6">
-        
+
       </VTable>
 
       <h1>Commits by Month</h1>
       <MonthCommits v-if="dataCollectDone"
                     :barChartData="authorData">
-        
+
       </MonthCommits>
-    </div>   
+    </div>
   </div>
 
 </template>
@@ -132,6 +139,10 @@ body {
 }
 
 .container {
+}
+
+.header {
+  margin-left: $sidebar-width;
 }
 
 .content {

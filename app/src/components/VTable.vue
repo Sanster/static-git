@@ -31,7 +31,7 @@
     <tfoot class="vtable-pagination">
       <tr>
           <ul>
-            <li v-for="(n, index) in totalPage" 
+            <li v-for="(n, index) in totalPage"
                 @click="loadPage(index)"
                 :class="{ 'active': isActive(index) }">
                 <a href="#">{{n}}</a>
@@ -139,7 +139,7 @@ export default {
   // width: 100%;
 
   border-collapse: collapse;
-  
+
   tbody {
     border-right: 1px solid #ddd;
 
@@ -147,7 +147,7 @@ export default {
       background-color: #f5f5f5;
     }
   }
-  
+
   th {
     background-color: #4CAF50;
     color: white;
@@ -191,7 +191,7 @@ export default {
   td {
     height: 16px;
   }
-  
+
   // .empty-row td {
   //   border-bottom: 0px;
   // }

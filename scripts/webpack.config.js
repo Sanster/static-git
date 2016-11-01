@@ -1,4 +1,5 @@
 var path = require('path')
+var webpack = require('webpack')
 var nodeExternals = require('webpack-node-externals')
 
 module.exports = {
@@ -16,6 +17,11 @@ module.exports = {
   resolveLoader: {
     modules: ['node_modules', path.resolve(__dirname, '../node_modules')]
   },
+  plugins: [
+    new webpack.ProvidePlugin({
+      "_": "lodash"
+    })
+  ],
   module: {
     loaders: [
       {

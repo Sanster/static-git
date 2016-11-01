@@ -1,12 +1,12 @@
 <template>
 <div>
   <canvas id='month-commits' width='500' height='350'></canvas>
-  <div>
+  <div id='month-commits-sum'>
     {{monthCommitsCount}} Commits this month.
     <h3>Top 5</h3>
     <ul>
       <li v-for="n in 5">
-        {{barChartData[n].name}}
+        {{sortedData[n].name}}
         {{authorMonthCommitsCount(n)}} commits.
       </li>
     </ul>
@@ -25,9 +25,14 @@ export default {
     return {
       yearData: {},
       monthData: [],
+      sortedData: [],
       selectedYear: '2016',
       selectedMonth: 0
     }
+  },
+  created () {
+    this.sortedData = this.barChartData
+    this.calYearData()
   },
   computed: {
     monthCommitsCount () {
@@ -38,7 +43,9 @@ export default {
     barClick (event, data) {
       if (data.length !== 0) {
         this.selectedMonth = data[0]._index
-        this.barChartData.sort(this.sortByMonthCommits)
+        this.sortedData = _.sortBy(this.barChartData, (authorData) => {
+          return -authorData.getMonthCommitsCount(this.selectedYear, this.selectedMonth)
+        })
       }
     },
     calYearData () {
@@ -51,26 +58,11 @@ export default {
           data[year][month] += this.barChartData[i].getMonthCommitsCount(year, month)
         }
       }
-     this.yearData[year] = data[year]
-    },
-    sortByMonthCommits (authorData1, authorData2) {
-      const commitsCount1 = authorData1.getMonthCommitsCount(this.selectedYear, this.selectedMonth)
-      const commitsCount2 = authorData2.getMonthCommitsCount(this.selectedYear, this.selectedMonth)
-
-      if (commitsCount1 > commitsCount2) {
-        return -1
-      } else if (commitsCount1 < commitsCount2) {
-        return 1
-      }
-
-      return 0
+      this.yearData[year] = data[year]
     },
     authorMonthCommitsCount (index) {
-      return this.barChartData[index].getMonthCommitsCount(this.selectedYear, this.selectedMonth)
+      return this.sortedData[index].getMonthCommitsCount(this.selectedYear, this.selectedMonth)
     }
-  },
-  created () {
-    this.calYearData()
   },
   mounted () {
     var ctx = document.getElementById('month-commits')
@@ -109,5 +101,11 @@ export default {
 </script>
 
 <style lang='sass'>
+#month-commits {
+  float: left;
+}
 
+#month-commits-sum {
+  float: left;
+}
 </style>

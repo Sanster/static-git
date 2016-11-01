@@ -2,5 +2,8 @@
     "extends": "vue",
     "plugins": [
       "vue"
-    ]
+    ],
+    "globals": {
+      "_": true
+    }
 }
