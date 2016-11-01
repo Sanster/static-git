@@ -19,7 +19,7 @@ import Chart from 'chart.js'
 
 export default {
   props: [
-    'barChartData'
+    'authorsData'
   ],
   data () {
     return {
@@ -31,7 +31,7 @@ export default {
     }
   },
   created () {
-    this.sortedData = this.barChartData
+    this.sortedData = this.authorsData
     this.calYearData()
   },
   computed: {
@@ -43,7 +43,7 @@ export default {
     barClick (event, data) {
       if (data.length !== 0) {
         this.selectedMonth = data[0]._index
-        this.sortedData = _.sortBy(this.barChartData, (authorData) => {
+        this.sortedData = _.sortBy(this.authorsData, (authorData) => {
           return -authorData.getMonthCommitsCount(this.selectedYear, this.selectedMonth)
         })
       }
@@ -53,9 +53,9 @@ export default {
       const year = '2016'
       data[year] = new Array(12).fill(0)
 
-      for (var i = 0, l = this.barChartData.length; i < l; ++i) {
+      for (var i = 0, l = this.authorsData.length; i < l; ++i) {
         for (var month = 0; month < 12; ++month) {
-          data[year][month] += this.barChartData[i].getMonthCommitsCount(year, month)
+          data[year][month] += this.authorsData[i].getMonthCommitsCount(year, month)
         }
       }
       this.yearData[year] = data[year]

@@ -22,14 +22,14 @@
       <h1>List of author</h1>
       <VTable v-if="dataCollectDone"
               :fields="fields"
-              :tableData="authorData"
+              :tableData="authorsData"
               :perPage="6">
 
       </VTable>
 
       <h1>Commits by Month</h1>
       <MonthCommits v-if="dataCollectDone"
-                    :barChartData="authorData">
+                    :authorsData="authorsData">
 
       </MonthCommits>
     </div>
@@ -77,8 +77,8 @@ export default {
     this.$git.collectData(this.showData)
   },
   computed: {
-    authorData () {
-      return this.$git.authorDatas
+    authorsData () {
+      return this.$git.authorsData
     }
   },
   methods: {
@@ -89,8 +89,6 @@ export default {
       this.activeIndex = index
     },
     showData () {
-      // console.log(commits);
-      // this.commits = commits;
       this.dataCollectDone = true
     }
   }

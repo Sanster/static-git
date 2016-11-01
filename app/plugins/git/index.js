@@ -16,9 +16,9 @@ export default class Git {
 
   init (app) {
     this.app = app
-    this._authorDatas = {}
-    this.authorDatas = []
-    this._monthDatas = {}
+    this._authorsData = {}
+    this.authorsData = []
+    this._monthsData = {}
     this.firstCommitDate = new Date(2005, 1, 1)
     this.lastCommitDate = new Date(2030, 1, 1)
     moment.locale('zh-cn')
@@ -27,10 +27,10 @@ export default class Git {
   _getAuthorData (author) {
     const authorName = author.name()
 
-    if (!this._authorDatas.hasOwnProperty(authorName)) {
-      this._authorDatas[authorName] = new AuthorData(author)
+    if (!this._authorsData.hasOwnProperty(authorName)) {
+      this._authorsData[authorName] = new AuthorData(author)
     }
-    return this._authorDatas[authorName]
+    return this._authorsData[authorName]
   }
 
   collectData (showData) {
@@ -89,14 +89,14 @@ export default class Git {
         history.on('end', () => {
           console.log('History walk end!')
 
-          for (var key in this._authorDatas) {
-            const data = this._authorDatas[key]
+          for (var key in this._authorsData) {
+            const data = this._authorsData[key]
             data.first_commit_time = moment(data.first_commit_time).format('L')
             data.last_commit_time = moment(data.first_commit_time).format('L')
             data.activeDays = data.getActiveDays()
-            this.authorDatas.push(data)
+            this.authorsData.push(data)
           }
-          console.log(this.authorDatas)
+          console.log(this.authorsData)
           showData()
         })
 
