@@ -32,6 +32,12 @@
                     :authorsData="authorsData">
 
       </MonthCommits>
+
+      <h1>Repo Lines</h1>
+      <CodeLines v-if="dataCollectDone"
+                 :lineCount="$git.lineCount">
+
+      </CodeLines>
     </div>
   </div>
 
@@ -40,6 +46,7 @@
 <script>
 import VTable from './components/VTable.vue'
 import MonthCommits from './components/MonthCommits.vue'
+import CodeLines from './components/CodeLines.vue'
 
 export default {
   data () {
@@ -71,7 +78,8 @@ export default {
   },
   components: {
     VTable,
-    MonthCommits
+    MonthCommits,
+    CodeLines
   },
   created () {
     this.$git.collectData(this.showData)

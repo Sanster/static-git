@@ -29,7 +29,12 @@ export default class AuthorData {
   }
 
   getMonthCommitsCount (year, month) {
-    return this.commitsCountByDay[year][month].count
+    if (this.commitsCountByDay.hasOwnProperty(year)) {
+      return this.commitsCountByDay[year][month].count
+    } else {
+      return 0
+    }
+
   }
 
   getYearCommitsCount (year) {

@@ -21,6 +21,7 @@ export default class Git {
     this._monthsData = {}
     this.firstCommitDate = new Date(2005, 1, 1)
     this.lastCommitDate = new Date(2030, 1, 1)
+    this.lineCount = {}
     moment.locale('zh-cn')
   }
 
@@ -31,6 +32,35 @@ export default class Git {
       this._authorsData[authorName] = new AuthorData(author)
     }
     return this._authorsData[authorName]
+  }
+
+  _calLineCount (stats, commitDate) {
+    const year = commitDate.getFullYear()
+    const month = commitDate.getMonth()
+    const day = commitDate.getDate()
+
+    if (!this.lineCount.hasOwnProperty(year)) {
+      this.lineCount[year] = this._getInitLineCount()
+    }
+
+    const changeLines = stats.total_additions - stats.total_deletions
+
+    this.lineCount[year][month] += changeLines
+    // this.lineCount[year][month][day] += changeLines
+  }
+
+  _getInitLineCount() {
+    const initLinesCount = []
+
+    for (var month = 0; month < 12; ++month) {
+      var dayCount = []
+      // for (var day = 0; day < 31; ++day) {
+      //   dayCount.push(0)
+      // }
+      initLinesCount.push(0)
+    }
+
+    return initLinesCount
   }
 
   collectData (showData) {
@@ -49,7 +79,7 @@ export default class Git {
             return
           }
 
-          if (++count >= 90) {
+          if (++count >= 600) {
             history.emit('end')
             history.end()
             return
@@ -77,6 +107,7 @@ export default class Git {
                   .then((arrayPatch) => {
                     arrayPatch.forEach((patch) => {
                       const stats = patch.lineStats()
+                      this._calLineCount(stats, commitDate)
                       authorData.commits_count += 1
                       authorData.total_additions += stats.total_additions
                       authorData.total_deletions += stats.total_deletions
@@ -96,7 +127,6 @@ export default class Git {
             data.activeDays = data.getActiveDays()
             this.authorsData.push(data)
           }
-          console.log(this.authorsData)
           showData()
         })
 
