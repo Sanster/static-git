@@ -63,6 +63,10 @@ export default class Git {
     return initLinesCount
   }
 
+  isGitRepo (path) {
+    return NodeGit.Repository.open(path)
+  }
+
   collectData (showData) {
     NodeGit.Repository.open('/Users/cwq/gitlab-development-kit/gitlab')
     // NodeGit.Repository.open('/Users/cwq/Github/static-git')

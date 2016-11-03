@@ -10,6 +10,16 @@ ipc.on('open-file-dialog', function (event) {
   })
 })
 
+ipc.on('open-info-dialog', function (event, msg) {
+  const options = {
+    type: 'info',
+    title: 'Information',
+    message: msg,
+    buttons: ['Ok']
+  }
+  dialog.showMessageBox(options)
+})
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win

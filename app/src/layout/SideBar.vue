@@ -52,9 +52,15 @@ export default {
     },
     addRepo (event, path) {
       const name = _(path[0].split('/')).last()
-      this.repos.push({
-        name: name
-      })
+      this.$git.isGitRepo(path[0])
+        .then((repo) => {
+          this.repos.push({
+            name: name
+          })
+        })
+        .catch((error) => {
+          ipc.send('open-info-dialog', "This is not a Git Repository.")
+        })
     },
     addRepoClicked () {
       ipc.send('open-file-dialog')
