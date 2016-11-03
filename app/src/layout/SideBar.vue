@@ -1,5 +1,8 @@
 <template>
   <div class="sidebar">
+    <div id="head">
+      Repositories
+    </div>
     <ul>
       <li v-for="(repo, index) in repos"
           class="list-group-item"
@@ -7,10 +10,11 @@
           @click="itemClick(index)">
           <a> {{repo.name}} </a>
       </li>
+      <li id="add-repo">
+        <i class="fa fa-plus"></i>
+        Add repository
+      </li>
     </ul>
-    <div id="add-repo">
-      Add repo
-    </div>
   </div>
 </template>
 
@@ -48,12 +52,35 @@ export default {
 
 .sidebar {
   position: fixed;
-  width: 220px;
+  width: $sidebar-width;
   top: 0;
   left: 0;
   bottom: 0;
   border-right: 1px solid #e7e7e7;
-  background: $dark-blue;
+  background: $light-black;
+
+  #head {
+    color: $white;
+    cursor: default;
+    font-size: 25px;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    background: rgba(25, 32, 45, 0.67);
+  }
+
+  a {
+    padding-left: 25px;
+    color: $white;
+  }
+
+  #add-repo {
+    color: $white;
+    cursor: pointer;
+    text-align: center;
+    height: 40px;
+    line-height: 40px;
+  }
 
   ul {
     padding: 0;
@@ -62,21 +89,19 @@ export default {
 
     .list-group-item {
       &:hover {
-        background: $light-blue;
+        background: $hover-white;
+        cursor: pointer;
       }
 
       height: 40px;
       line-height: 40px;
 
       &.active {
-        // border-left: 4px solid #86bc63;
-        background: $light-blue;
+        border-left: 4px solid $white;
+        background: $highlight-white;
       }
 
-      a {
-        padding-left: 15px;
-        color: white;
-      }
+      border-bottom: 1px solid $highlight-white;
     }
   }
 }
