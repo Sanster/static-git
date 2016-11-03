@@ -6,12 +6,16 @@ module.exports = {
   entry: path.resolve(__dirname, '../app/src/main.js'),
   output: {
     path: path.resolve(__dirname, '../app/dist'),
+    publicPath: path.resolve(__dirname, '../app/dist') + '/',
     filename: '[name].js'
+
   },
   target: 'electron',
   externals: [
     nodeExternals({
-      'modulesDir': path.resolve(__dirname, '../node_modules')
+      'modulesDir': path.resolve(__dirname, '../node_modules/'),
+      // load non-javascript files with extensions, presumably via loaders
+      'whitelist': [/\.(?!(?:jsx?|json)$).{1,5}$/i]
     })
   ],
   resolveLoader: {
@@ -22,6 +26,13 @@ module.exports = {
       "_": "lodash"
     })
   ],
+  resolve: {
+    alias: {
+      style: path.join(__dirname, '../app/src/stylesheet'),
+      components: path.join(__dirname, '../app/src/components'),
+      layout: path.join(__dirname, '../app/src/layout'),
+    }
+  },
   module: {
     loaders: [
       {
@@ -38,12 +49,28 @@ module.exports = {
         loader: 'style!css'
       },
       {
-        test: /\.sass$/,
+        test: /\.scss$/,
         loader: 'style!css!sass'
       },
       {
-        test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)/,
-        loader: 'url'
+        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+        loader: "url?limit=10000&mimetype=application/font-woff"
+      },
+      {
+        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+        loader: "url?limit=10000&mimetype=application/font-woff"
+      },
+      {
+        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+        loader: "url?limit=10000&mimetype=application/octet-stream"
+      },
+      {
+        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+        loader: "file"
+      },
+      {
+        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        loader: "url?limit=10000&mimetype=image/svg+xml"
       }
     ]
   }

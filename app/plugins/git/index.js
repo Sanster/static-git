@@ -79,7 +79,7 @@ export default class Git {
             return
           }
 
-          if (++count >= 600) {
+          if (++count >= 90) {
             history.emit('end')
             history.end()
             return

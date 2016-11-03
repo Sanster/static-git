@@ -6,8 +6,9 @@
             @click="sortByKey(key)">
           <a href="#">{{field}}</a>
           <div class="sort-icon" v-show="key == sortKey">
-            <icon name="caret-down" class="sort-icon-down" :class="{ 'active' : downSort }"></icon>
-            <icon name="caret-up" class="sort-icon-up" :class="{ 'active' : !downSort }"></icon>
+            <!--<icon name="caret-down" class="sort-icon-down" :class="{ 'active' : downSort }"></icon>-->
+            <!--<icon name="caret-up" class="sort-icon-up" :class="{ 'active' : !downSort }"></icon>-->
+            <i class="fa fa-fw fa-question"></i>
           </div>
         </th>
       </tr>

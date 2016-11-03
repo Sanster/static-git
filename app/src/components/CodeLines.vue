@@ -57,7 +57,7 @@ export default {
 
 </script>
 
-<style lang='sass'>
+<style lang="sass">
 #code-lines {
     clear: both;
 }
