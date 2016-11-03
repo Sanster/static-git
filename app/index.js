@@ -1,4 +1,14 @@
 const { app, BrowserWindow } = require('electron')
+const ipc = require('electron').ipcMain
+const dialog = require('electron').dialog
+
+ipc.on('open-file-dialog', function (event) {
+  dialog.showOpenDialog({
+    properties: ['openDirectory']
+  }, function (files) {
+    if (files) event.sender.send('selected-directory', files)
+  })
+})
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

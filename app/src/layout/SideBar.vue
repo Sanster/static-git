@@ -10,7 +10,8 @@
           @click="itemClick(index)">
           <a> {{repo.name}} </a>
       </li>
-      <li id="add-repo">
+      <li id="add-repo"
+          @click="addRepoClicked">
         <i class="fa fa-plus"></i>
         Add repository
       </li>
@@ -19,6 +20,9 @@
 </template>
 
 <script>
+import electron from 'electron'
+const ipc = electron.ipcRenderer
+
 export default {
   data () {
     return {
@@ -36,12 +40,24 @@ export default {
       ]
     }
   },
+  mounted () {
+    ipc.on('selected-directory', this.addRepo)
+  },
   methods: {
     isActive (index) {
       return index === this.activeIndex
     },
     itemClick (index) {
       this.activeIndex = index
+    },
+    addRepo (event, path) {
+      const name = _(path[0].split('/')).last()
+      this.repos.push({
+        name: name
+      })
+    },
+    addRepoClicked () {
+      ipc.send('open-file-dialog')
     }
   }
 }
@@ -71,7 +87,7 @@ export default {
 
   a {
     padding-left: 25px;
-    color: $white;
+    color: $gray;
   }
 
   #add-repo {
@@ -99,6 +115,10 @@ export default {
       &.active {
         border-left: 4px solid $white;
         background: $highlight-white;
+
+        a {
+          color: $white;
+        }
       }
 
       border-bottom: 1px solid $highlight-white;
