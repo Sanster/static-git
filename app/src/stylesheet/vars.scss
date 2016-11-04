@@ -8,3 +8,27 @@ $gray: #9CA2A9;
 $white: #F3F5FB;
 $highlight-white: rgba(156, 162, 169, 0.3);
 $hover-white: rgba(156, 162, 169, 0.15);
+
+@mixin animation($content) {
+  animation: $content;
+  -moz-animation: $content;
+  -webkit-animation: $content;
+}
+
+@mixin keyframes($name) {
+  @keyframes #{$name} { @content; }
+  @-moz-keyframes #{$name} { @content; }
+  @-webkit-keyframes #{$name} { @content; }
+}
+
+@mixin transform($content) {
+  transform: $content;
+  -moz-transform: $content;
+  -webkit-transform: $content;
+}
+
+@mixin transition($content) {
+  transition: $content;
+  -moz-transition: $content;
+  -webkit-transition: $content;
+}

@@ -1,14 +1,16 @@
 <template>
   <div class="sidebar">
     <div id="head">
-      Repositories
+      <!--<i class="fa fa-folder"></i>
+      Gitlab-->
+      <VSelect></VSelect>
     </div>
     <ul>
-      <li v-for="(repo, index) in repos"
-          class="list-group-item"
+      <li v-for="(statsItem, index) in statsItems"
+          class="stats-item"
           :class="{ 'active': isActive(index) }"
           @click="itemClick(index)">
-          <a> {{repo.name}} </a>
+          <a class="stats-item-name"> {{statsItem.name}} </a>
       </li>
       <li id="add-repo"
           @click="addRepoClicked">
@@ -20,6 +22,7 @@
 </template>
 
 <script>
+import VSelect from 'components/VSelect.vue'
 import electron from 'electron'
 const ipc = electron.ipcRenderer
 
@@ -27,18 +30,21 @@ export default {
   data () {
     return {
       activeIndex: 0,
-      repos: [
+      statsItems: [
         {
-          name: 'gitlab'
+          name: 'Author List'
         },
         {
-          name: 'static-git'
+          name: 'Month Commits'
         },
         {
-          name: 'starbucks'
+          name: 'Code Lines'
         }
       ]
     }
+  },
+  components: {
+    VSelect
   },
   mounted () {
     ipc.on('selected-directory', this.addRepo)
@@ -81,17 +87,11 @@ export default {
   border-right: 1px solid #e7e7e7;
   background: $light-black;
 
-  #head {
-    color: $white;
-    cursor: default;
-    font-size: 25px;
-    height: 60px;
-    line-height: 60px;
-    text-align: center;
-    background: rgba(25, 32, 45, 0.67);
+  #repo-selector {
+
   }
 
-  a {
+  .stats-item-name {
     padding-left: 25px;
     color: $gray;
   }
@@ -109,7 +109,7 @@ export default {
     margin: 0;
     list-style-type: none;
 
-    .list-group-item {
+    .stats-item {
       &:hover {
         background: $hover-white;
         cursor: pointer;
