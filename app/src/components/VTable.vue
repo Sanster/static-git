@@ -1,4 +1,5 @@
 <template>
+<div>
   <table class="vtable">
     <thead>
       <tr>
@@ -6,8 +7,8 @@
             @click="sortByKey(key)">
           <a href="#">{{field}}</a>
           <div class="sort-icon"
-               :class="downSort ? 'down' : 'up'"
-               v-show="key == sortKey">
+              :class="downSort ? 'down' : 'up'"
+              v-show="key == sortKey">
             <i class="fa fa-caret-down"></i>
           </div>
         </th>
@@ -29,16 +30,17 @@
         <td v-for="j in Object.keys(fields).length"></td>
       </tr>
     </tbody>
-    <tfoot class="vtable-pagination">
-      <ul>
-        <li v-for="(n, index) in totalPage"
-            @click="loadPage(index)"
-            :class="{ 'active': isActive(index) }">
-            <a href="#">{{n}}</a>
-        </li>
-      </ul>
-    </tfoot>
   </table>
+  <div class="vtable-pagination">
+    <ul>
+      <li v-for="(n, index) in totalPage"
+          @click="loadPage(index)"
+          :class="{ 'active': isActive(index) }">
+          <a href="#">{{n}}</a>
+      </li>
+    </ul>
+  </div>
+</div>
 
 </template>
 
