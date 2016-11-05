@@ -1,11 +1,10 @@
 <template>
-<div class="vselect-dropdown"
+<div id="repo-selector"
      :class="optionsVisible ? 'open' : 'close'">
   <a href="#"
      class="vselect-dropdown__input"
      @click="toggleDropdown">
-    <i class="fa fa-folder"></i>
-    Add a repository
+    <span>Add a repository</span>
     <i class="fa fa-caret-down"></i>
   </a>
   <ul class="vselect-dropdown__list"
@@ -37,9 +36,11 @@ export default {
 <style lang="sass">
 @import '../stylesheet/vars.scss';
 
-.vselect-dropdown {
-  height: 38px;
+#repo-selector {
+  height: 48px;
+  line-height: 48px;
   text-align: center;
+  box-shadow: 1px 2px 2px rgb(35, 29, 29);
 
   .open {
     background: $black;

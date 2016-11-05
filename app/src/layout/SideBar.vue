@@ -1,11 +1,9 @@
 <template>
   <div class="sidebar">
     <div id="head">
-      <!--<i class="fa fa-folder"></i>
-      Gitlab-->
-      <VSelect></VSelect>
+      <repo-selector></repo-selector>
     </div>
-    <ul>
+    <ul class="stats-item-list">
       <li class="stats-item" :class="{ 'active': isActive(0) }" @click="itemClick(0)">
         <a class="stats-item-name"><i class="fa fa-fw fa-users"></i><span>Contributions</span> </a>
       </li>
@@ -25,7 +23,7 @@
 </template>
 
 <script>
-import VSelect from 'components/VSelect.vue'
+import RepoSelector from 'components/RepoSelector.vue'
 import electron from 'electron'
 const ipc = electron.ipcRenderer
 
@@ -36,7 +34,7 @@ export default {
     }
   },
   components: {
-    VSelect
+    RepoSelector
   },
   mounted () {
     ipc.on('selected-directory', this.addRepo)
@@ -88,9 +86,10 @@ export default {
     line-height: 40px;
   }
 
-  ul {
+  .stats-item-list {
     padding: 0;
     margin: 0;
+    margin-top: 15px;
 
     .stats-item {
       position: relative;
