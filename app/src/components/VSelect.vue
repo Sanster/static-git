@@ -41,21 +41,11 @@ export default {
   height: 38px;
   text-align: center;
 
-  &.open {
-    .fa-caret-down {
-      @include transform(rotate(180deg));
-      @include transition(transform .5s);
-    }
-
+  .open {
     background: $black;
   }
 
-  &.close {
-    .fa-caret-down {
-      @include transform(rotate(0deg));
-      @include transition(transform .5s);
-    }
-
+  .close {
     background: $light-black;
   }
 

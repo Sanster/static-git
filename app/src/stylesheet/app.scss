@@ -1,3 +1,19 @@
+@import 'vars.scss';
+
 a {
   text-decoration: none;
+}
+
+.open, .up {
+  .fa-caret-down {
+    @include transform(rotate(180deg));
+    @include transition(transform .5s);
+  }
+}
+
+.close, .down {
+  .fa-caret-down {
+    @include transform(rotate(0deg));
+    @include transition(transform .5s);
+  }
 }

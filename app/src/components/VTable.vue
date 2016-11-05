@@ -5,10 +5,10 @@
         <th v-for="(field, key) in fields"
             @click="sortByKey(key)">
           <a href="#">{{field}}</a>
-          <div class="sort-icon" v-show="key == sortKey">
-            <!--<icon name="caret-down" class="sort-icon-down" :class="{ 'active' : downSort }"></icon>-->
-            <!--<icon name="caret-up" class="sort-icon-up" :class="{ 'active' : !downSort }"></icon>-->
-            <i class="fa fa-fw fa-question"></i>
+          <div class="sort-icon"
+               :class="downSort ? 'down' : 'up'"
+               v-show="key == sortKey">
+            <i class="fa fa-caret-down"></i>
           </div>
         </th>
       </tr>
@@ -30,15 +30,13 @@
       </tr>
     </tbody>
     <tfoot class="vtable-pagination">
-      <tr>
-          <ul>
-            <li v-for="(n, index) in totalPage"
-                @click="loadPage(index)"
-                :class="{ 'active': isActive(index) }">
-                <a href="#">{{n}}</a>
-            </li>
-          </ul>
-      </tr>
+      <ul>
+        <li v-for="(n, index) in totalPage"
+            @click="loadPage(index)"
+            :class="{ 'active': isActive(index) }">
+            <a href="#">{{n}}</a>
+        </li>
+      </ul>
     </tfoot>
   </table>
 
@@ -137,7 +135,7 @@ export default {
 <style lang="sass">
 .vtable {
   font-size: 14px;
-  // width: 100%;
+  width: 100%;
 
   border-collapse: collapse;
 
@@ -180,12 +178,9 @@ export default {
   }
 
   th, td {
-    // border: 1px solid black;
-    border-bottom: 1px solid #ddd;
-    // padding-left: 7px;
-    // padding-right: 7px;
     padding: 6px;
     text-align: center;
+    min-width: 85px;
   }
 
   td {
