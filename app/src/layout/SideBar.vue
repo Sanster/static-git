@@ -55,6 +55,7 @@ export default {
     },
     itemClick (index) {
       this.activeIndex = index
+      this.$emit('sideBarClick', index)
     },
     addRepo (event, path) {
       const name = _(path[0].split('/')).last()

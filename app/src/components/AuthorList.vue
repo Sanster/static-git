@@ -1,6 +1,6 @@
 <template>
 <div>
-  <table class="vtable">
+  <table id="author-list">
     <thead>
       <tr>
         <th v-for="(field, key) in fields"
@@ -48,7 +48,6 @@
 export default {
   props: [
     'tableData',
-    'fields',
     'perPage'
   ],
   data () {
@@ -58,7 +57,17 @@ export default {
       initSortKey: 'Default',
       sortKey: 'Default',
       emptyRow: 0,
-      downSort: true
+      downSort: true,
+      fields: {
+        'name': 'Name',
+        'email': 'Email',
+        'commits_count': 'Commits',
+        'total_additions': 'Line ++',
+        'total_deletions': 'Line --',
+        'activeDays': 'Active Day',
+        'first_commit_time': 'First time',
+        'last_commit_time': 'Last time'
+      },
     }
   },
   computed: {
@@ -135,7 +144,7 @@ export default {
 </script>
 
 <style lang="sass">
-.vtable {
+#author-list {
   font-size: 14px;
   width: 100%;
 

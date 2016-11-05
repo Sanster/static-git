@@ -1,33 +1,24 @@
 <template>
   <div class="container">
     <div class="header">
-      <ul>
-        <li>Author Data</li>
-        <li>Month Commits</li>
-      </ul>
     </div>
 
-    <side-bar>
+    <side-bar v-on:sideBarClick="sideBarClicked"></side-bar>
 
-    </side-bar>
+    <div class="content"
+         v-if="dataCollectDone">
+      <AuthorList v-show="showStats(0)"
+                  :tableData="authorsData"
+                  :perPage="12">
 
-    <div class="content">
-      <h1>List of author</h1>
-      <VTable v-if="dataCollectDone"
-              :fields="fields"
-              :tableData="authorsData"
-              :perPage="6">
+      </AuthorList>
 
-      </VTable>
-
-      <h1>Commits by Month</h1>
-      <MonthCommits v-if="dataCollectDone"
+      <MonthCommits v-show="showStats(1)"
                     :authorsData="authorsData">
 
       </MonthCommits>
 
-      <h1>Repo Lines</h1>
-      <CodeLines v-if="dataCollectDone"
+      <CodeLines v-show="showStats(2)"
                  :lineCount="$git.lineCount">
 
       </CodeLines>
@@ -37,7 +28,7 @@
 </template>
 
 <script>
-import VTable from 'components/VTable.vue'
+import AuthorList from 'components/AuthorList.vue'
 import MonthCommits from 'components/MonthCommits.vue'
 import CodeLines from 'components/CodeLines.vue'
 import SideBar from 'layout/SideBar.vue'
@@ -45,33 +36,12 @@ import SideBar from 'layout/SideBar.vue'
 export default {
   data () {
     return {
-      activeIndex: 0,
       dataCollectDone: false,
-      fields: {
-        'name': 'Name',
-        'email': 'Email',
-        'commits_count': 'Commits',
-        'total_additions': 'Line ++',
-        'total_deletions': 'Line --',
-        'activeDays': 'Active Day',
-        'first_commit_time': 'First time',
-        'last_commit_time': 'Last time'
-      },
-      repos: [
-        {
-          name: 'gitlab'
-        },
-        {
-          name: 'static-git'
-        },
-        {
-          name: 'starbucks'
-        }
-      ]
+      statsIndex: 0
     }
   },
   components: {
-    VTable,
+    AuthorList,
     MonthCommits,
     CodeLines,
     SideBar
@@ -85,14 +55,14 @@ export default {
     }
   },
   methods: {
-    isActive (index) {
-      return index === this.activeIndex
-    },
-    itemClick (index) {
-      this.activeIndex = index
-    },
     showData () {
       this.dataCollectDone = true
+    },
+    sideBarClicked (index) {
+      this.statsIndex = index
+    },
+    showStats (index) {
+      return this.statsIndex === index
     }
   }
 }
