@@ -1,5 +1,7 @@
 <template>
-  <canvas id='code-lines' width='500' height='350'></canvas>
+  <div>
+    <canvas id='code-lines' width='500' height='350'></canvas>
+  </div>
 </template>
 
 <script>
@@ -7,11 +9,16 @@ import Chart from 'chart.js'
 
 export default {
   props: [
-    'lineCount'
+    'options'
   ],
   data () {
     return {
       selectedYear: '2016',
+    }
+  },
+  computed: {
+    lineCount () {
+      return this.options.lineCount
     }
   },
   methods: {

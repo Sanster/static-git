@@ -19,7 +19,7 @@ import Chart from 'chart.js'
 
 export default {
   props: [
-    'authorsData'
+    'options'
   ],
   data () {
     return {
@@ -37,6 +37,9 @@ export default {
   computed: {
     monthCommitsCount () {
       return this.yearData[this.selectedYear][this.selectedMonth]
+    },
+    authorsData () {
+      return this.options.authorsData
     }
   },
   methods: {

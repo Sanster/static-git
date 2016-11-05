@@ -22,7 +22,6 @@ export default class Git {
     this.firstCommitDate = new Date(2005, 1, 1)
     this.lastCommitDate = new Date(2030, 1, 1)
     this.lineCount = {}
-    moment.locale('zh-cn')
   }
 
   _getAuthorData (author) {
@@ -83,7 +82,7 @@ export default class Git {
             return
           }
 
-          if (++count >= 90) {
+          if (++count >= 800) {
             history.emit('end')
             history.end()
             return

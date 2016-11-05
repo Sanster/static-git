@@ -4,12 +4,13 @@
     <thead>
       <tr>
         <th v-for="(field, key) in fields"
-            @click="sortByKey(key)">
-          <a href="#">{{field}}</a>
-          <div class="sort-icon"
-              :class="downSort ? 'down' : 'up'"
-              v-show="key == sortKey">
-            <i class="fa fa-caret-down"></i>
+            @click="sortByKey(key)"
+            :class="key + '__col'">
+          <div class="field__header"
+               :class="downSort ? 'down' : 'up'">
+            <a href="#">{{field}}</a>
+            <i class="fa fa-caret-down sort-icon"
+                v-show="key == sortKey"></i>
           </div>
         </th>
       </tr>
@@ -17,12 +18,15 @@
     <tbody v-cloak>
       <tr v-for="data in pageData">
         <td v-for="(field, key) in fields">
-          <template v-if="Array.isArray(data[key])">
-            {{data[key].length}}
-          </template>
-          <template v-else>
-            {{data[key]}}
-          </template>
+          <div :class="key + '__col'">
+            <template v-if="Array.isArray(data[key])">
+              {{data[key].length}}
+            </template>
+            <template v-else>
+              {{data[key]}}
+            </template>
+          </div>
+
         </td>
       <tr>
       <tr v-for="n in emptyRow"
@@ -47,8 +51,7 @@
 <script>
 export default {
   props: [
-    'tableData',
-    'perPage'
+    'options'
   ],
   data () {
     return {
@@ -58,9 +61,9 @@ export default {
       sortKey: 'Default',
       emptyRow: 0,
       downSort: true,
+      perPage: 12,
       fields: {
         'name': 'Name',
-        'email': 'Email',
         'commits_count': 'Commits',
         'total_additions': 'Line ++',
         'total_deletions': 'Line --',
@@ -72,20 +75,20 @@ export default {
   },
   computed: {
     totalPage () {
-      return Math.ceil(this.tableData.length / this.perPage)
+      return Math.ceil(this.options.authorsData.length / this.perPage)
     },
     pageData () {
       const cacheKey = this.cacheKey()
 
       if (!this.sortedDataCache.hasOwnProperty(cacheKey)) {
-        this.sortedDataCache[cacheKey] = this.tableData
+        this.sortedDataCache[cacheKey] = this.options.authorsData
       }
+
       const data = this.sortedDataCache[cacheKey].slice(this.currentPage * this.perPage,
                                                         (this.currentPage + 1) * this.perPage)
       this.emptyRow = this.perPage - data.length
       return data
     }
-
   },
   methods: {
     loadPage (page) {
@@ -125,8 +128,8 @@ export default {
       const cacheKey = this.cacheKey()
 
       if (!this.sortedDataCache.hasOwnProperty(cacheKey)) {
-        // Save the copy of tableData
-        this.sortedDataCache[cacheKey] = this.tableData.slice().sort(this.compareKey(key))
+        // Save the copy of authorsData
+        this.sortedDataCache[cacheKey] = this.options.authorsData.slice().sort(this.compareKey(key))
       }
     },
     cacheKey () {
@@ -145,14 +148,15 @@ export default {
 
 <style lang="sass">
 #author-list {
-  font-size: 14px;
-  width: 100%;
+  font-size: 15px;
+  width: 90%;
+  margin: auto;
+  margin-top: 30px;
+  table-layout: fixed;
 
   border-collapse: collapse;
 
   tbody {
-    border-right: 1px solid #ddd;
-
     tr:hover {
       background-color: #f5f5f5;
     }
@@ -165,42 +169,36 @@ export default {
     border-right: 1px solid #ddd;
     -webkit-user-select: none;
 
-    > a {
+    a {
       color: #fff;
     }
 
+    .field__header {
+      position: relative;
+    }
+
     .sort-icon {
-      display: inline-block;
-
-      & > svg {
-        position: relative;
-        top: 3px;
-      }
-
-      .sort-icon-up {
-        position: relative;
-        right: 3px;
-      }
-
-      .active {
-        color: #000;
-      }
+      position: absolute;
+      right: 0px;
     }
   }
 
   th, td {
     padding: 6px;
     text-align: center;
-    min-width: 85px;
   }
 
   td {
     height: 16px;
+    cursor: pointer;
   }
 
-  // .empty-row td {
-  //   border-bottom: 0px;
-  // }
+  .name__col {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 170px;
+  }
 }
 
 .vtable-pagination {

@@ -3,26 +3,18 @@
     <div class="header">
     </div>
 
-    <side-bar v-on:sideBarClick="sideBarClicked"></side-bar>
+    <sidebar v-on:sideBarClick="sideBarClicked"></sidebar>
 
-    <div class="content"
-         v-if="dataCollectDone">
-      <AuthorList v-show="showStats(0)"
-                  :tableData="authorsData"
-                  :perPage="12">
-
-      </AuthorList>
-
-      <MonthCommits v-show="showStats(1)"
-                    :authorsData="authorsData">
-
-      </MonthCommits>
-
-      <CodeLines v-show="showStats(2)"
-                 :lineCount="$git.lineCount">
-
-      </CodeLines>
-    </div>
+    <transition name="fade">
+      <div class="content"
+          v-if="dataCollectDone">
+        <transition name="fade" mode="out-in">
+          <keep-alive>
+            <component :is="currentView" :options="options"></component>
+          </keep-alive>
+        </transition>
+      </div>
+    </transition>
   </div>
 
 </template>
@@ -41,10 +33,10 @@ export default {
     }
   },
   components: {
-    AuthorList,
-    MonthCommits,
-    CodeLines,
-    SideBar
+    'author-list': AuthorList,
+    'month-commits': MonthCommits,
+    'code-lines': CodeLines,
+    'sidebar': SideBar
   },
   created () {
     this.$git.collectData(this.showData)
@@ -52,6 +44,30 @@ export default {
   computed: {
     authorsData () {
       return this.$git.authorsData
+    },
+    currentView () {
+      if (this.statsIndex === 0) {
+        return 'author-list'
+      } else if (this.statsIndex === 1) {
+        return 'month-commits'
+      } else if (this.statsIndex === 2) {
+        return 'code-lines'
+      }
+    },
+    options () {
+      if (this.statsIndex === 0) {
+        return {
+          authorsData: this.authorsData
+        }
+      } else if (this.statsIndex === 1) {
+        return {
+          authorsData: this.authorsData
+        }
+      } else if (this.statsIndex === 2) {
+        return {
+          lineCount: this.$git.lineCount
+        }
+      }
     }
   },
   methods: {
