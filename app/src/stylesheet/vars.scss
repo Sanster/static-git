@@ -7,7 +7,7 @@ $light-black: #383E49;
 $gray: #9CA2A9;
 $white: #F3F5FB;
 $highlight-white: rgba(156, 162, 169, 0.3);
-$hover-white: rgba(156, 162, 169, 0.15);
+$hover-white: #424b56;
 
 @mixin animation($content) {
   animation: $content;

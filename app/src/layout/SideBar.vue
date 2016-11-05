@@ -6,11 +6,14 @@
       <VSelect></VSelect>
     </div>
     <ul>
-      <li v-for="(statsItem, index) in statsItems"
-          class="stats-item"
-          :class="{ 'active': isActive(index) }"
-          @click="itemClick(index)">
-          <a class="stats-item-name"> {{statsItem.name}} </a>
+      <li class="stats-item" :class="{ 'active': isActive(0) }" @click="itemClick(0)">
+        <a class="stats-item-name"><i class="fa fa-fw fa-users"></i><span>Contributions</span> </a>
+      </li>
+      <li class="stats-item" :class="{ 'active': isActive(1) }" @click="itemClick(1)">
+        <a class="stats-item-name"><i class="fa fa-fw fa-circle-o"></i><span>Month Commits</span></a>
+      </li>
+      <li class="stats-item" :class="{ 'active': isActive(2) }" @click="itemClick(2)">
+        <a class="stats-item-name"><i class="fa fa-fw fa-align-justify"></i><span>Code Lines</span></a>
       </li>
       <li id="add-repo"
           @click="addRepoClicked">
@@ -29,18 +32,7 @@ const ipc = electron.ipcRenderer
 export default {
   data () {
     return {
-      activeIndex: 0,
-      statsItems: [
-        {
-          name: 'Author List'
-        },
-        {
-          name: 'Month Commits'
-        },
-        {
-          name: 'Code Lines'
-        }
-      ]
+      activeIndex: 0
     }
   },
   components: {
@@ -88,15 +80,6 @@ export default {
   border-right: 1px solid #e7e7e7;
   background: $light-black;
 
-  #repo-selector {
-
-  }
-
-  .stats-item-name {
-    padding-left: 25px;
-    color: $gray;
-  }
-
   #add-repo {
     color: $white;
     cursor: pointer;
@@ -108,27 +91,41 @@ export default {
   ul {
     padding: 0;
     margin: 0;
-    list-style-type: none;
 
     .stats-item {
+      position: relative;
+      cursor: pointer;
+
       &:hover {
         background: $hover-white;
-        cursor: pointer;
+
+        a {
+          border-left: 4px solid $hover-white;
+        }
       }
 
       height: 40px;
       line-height: 40px;
 
-      &.active {
-        border-left: 4px solid $white;
-        background: $highlight-white;
+      a {
+        padding-left: 35px;
+        border-left: 4px solid $light-black;
+      }
 
+      &.active {
         a {
+          border-left: 4px solid $white;
           color: $white;
         }
       }
+    }
 
-      border-bottom: 1px solid $highlight-white;
+    .stats-item-name {
+      color: $gray;
+
+      .fa {
+        margin-right: 10px;
+      }
     }
   }
 }
