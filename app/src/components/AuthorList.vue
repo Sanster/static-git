@@ -7,10 +7,10 @@
             @click="sortByKey(key)"
             :class="key + '__col'">
           <div class="field__header"
-               :class="downSort ? 'down' : 'up'">
+               :class="headClass">
             <a href="#">{{field}}</a>
             <i class="fa fa-caret-down sort-icon"
-                v-show="key == sortKey"></i>
+               v-show="key == sortKey"></i>
           </div>
         </th>
       </tr>
@@ -26,7 +26,6 @@
               {{data[key]}}
             </template>
           </div>
-
         </td>
       <tr>
       <tr v-for="n in emptyRow"
@@ -35,24 +34,22 @@
       </tr>
     </tbody>
   </table>
-  <div class="vtable-pagination">
-    <ul>
-      <li v-for="(n, index) in totalPage"
-          @click="loadPage(index)"
-          :class="{ 'active': isActive(index) }">
-          <a href="#">{{n}}</a>
-      </li>
-    </ul>
-  </div>
+  <pagination :total="totalPage"
+              v-on:currentChange="pageChange"></pagination>
 </div>
 
 </template>
 
 <script>
+import Pagination from './Pagination.vue'
+
 export default {
   props: [
     'options'
   ],
+  components: {
+    'pagination': Pagination
+  },
   data () {
     return {
       currentPage: 0,
@@ -88,13 +85,14 @@ export default {
                                                         (this.currentPage + 1) * this.perPage)
       this.emptyRow = this.perPage - data.length
       return data
+    },
+    headClass () {
+      return this.downSort ? 'down' : 'up'
     }
   },
   methods: {
-    loadPage (page) {
-      if (page !== this.currentPage) {
-        this.currentPage = page
-      }
+    pageChange (page) {
+      this.currentPage = page
     },
     compareKey (key) {
       const downSort = this.downSort
@@ -138,9 +136,6 @@ export default {
       } else {
         return this.sortKey + '-up-sort'
       }
-    },
-    isActive (page) {
-      return this.currentPage === page
     }
   }
 }
@@ -198,42 +193,6 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 170px;
-  }
-}
-
-.vtable-pagination {
-  ul {
-    display: inline-block;
-    list-style-type: none;
-    padding-left: 0px;
-    margin: 0px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    height: 20px;
-
-    li {
-      float:left;
-      padding: 5px;
-      cursor: pointer;
-      width: 20px;
-      text-align: center;
-
-      &:hover {
-        background: #e7e7e7;
-      }
-
-      &.active {
-        background: #f5f5f5;
-      }
-    }
-  }
-
-  & > td {
-    width: 100%;
-  }
-
-  a {
-    text-decoration: none;
   }
 }
 </style>
