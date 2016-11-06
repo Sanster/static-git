@@ -1,17 +1,19 @@
 <template>
 <div class="pagination">
   <button class="btn-prev"
+          :class="{disabled: this.currentPage === 0}"
           @click="prev">
     <i class="fa fa-chevron-left"></i>
   </button>
   <ul>
-    <li v-for="(n, index) in total"
+    <li v-for="(n, index) in page"
         @click="loadPage(index)"
         :class="{ 'active': isActive(index) }">
         <a href="#">{{n}}</a>
     </li>
   </ul>
   <button class="btn-next"
+          :class="{disabled: this.currentPage === this.total - 1}"
           @click="next">
     <i class="fa fa-chevron-right"></i>
   </button>
@@ -30,6 +32,11 @@ export default {
       maxPage: 6
     }
   },
+  computed: {
+    page () {
+      return this.total > this.maxPage ? this.maxPage : this.total
+    }
+  },
   methods: {
     loadPage (page) {
       if (page !== this.currentPage) {
@@ -41,21 +48,31 @@ export default {
       return this.currentPage === page
     },
     prev () {
-      this.currentPage -= 1
-      this.$emit('currentChange', this.currentPage)
+      if (this.currentPage > 0) {
+        this.currentPage -= 1
+        this.$emit('currentChange', this.currentPage)
+      }
     },
     next () {
-      this.currentPage += 1
-      this.$emit('currentChange', this.currentPage)
+      if (this.currentPage < this.total - 1) {
+        this.currentPage += 1
+        this.$emit('currentChange', this.currentPage)
+      }
     }
   }
 }
 </script>
 
 <style lang="sass">
+@import '../stylesheet/vars.scss';
+
 .pagination {
-  width: 400px;
+  width: 180px;
   margin: auto;
+  position: relative;
+  padding-left: 25px;
+  padding-right: 25px;
+  height: 50px;
 
   ul {
     display: inline-block;
@@ -64,7 +81,6 @@ export default {
     margin: 0px;
     margin-top: 10px;
     margin-bottom: 10px;
-    height: 20px;
 
     li {
       float:left;
@@ -72,14 +88,22 @@ export default {
       cursor: pointer;
       width: 20px;
       text-align: center;
-
-      &:hover {
-        background: #e7e7e7;
-      }
+      font-size: 17px;
 
       &.active {
-        background: #f5f5f5;
+        background: $light-black;
+        cursor: default;
+        border-radius: 15px;
+
+        a {
+          color: white;
+          cursor: default;
+        }
       }
+    }
+
+    li a {
+      color: black;
     }
   }
 
@@ -89,6 +113,40 @@ export default {
 
   a {
     text-decoration: none;
+  }
+
+  .btn-next, .btn-prev {
+    position: absolute;
+    top: 0;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 30px;
+    border: 0px;
+    background: transparent;
+    font-size: 15px;
+    color: #64676f;
+    cursor: pointer;
+
+    &:focus {
+      outline: 0px;
+    }
+
+    &:hover {
+      color: black;
+    }
+
+    &.disabled {
+      cursor: not-allowed;
+      color: $gray;
+    }
+  }
+
+  .btn-next {
+    right: 0;
+  }
+
+  .btn-prev {
+    left: 0;
   }
 }
 </style>
