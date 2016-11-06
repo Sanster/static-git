@@ -148,7 +148,9 @@ export default {
   margin: auto;
   margin-top: 30px;
   table-layout: fixed;
-
+  position: relative;
+  z-index: -1;
+  
   border-collapse: collapse;
 
   tbody {

@@ -89,15 +89,11 @@ body {
   margin: 0;
 }
 
-.container {
-}
-
 .header {
   margin-left: 220px;
 }
 
 .content {
-  position: fixed;
   margin-left: 220px;
   left: 0;
   top: 0;

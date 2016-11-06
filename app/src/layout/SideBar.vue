@@ -13,19 +13,12 @@
       <li class="stats-item" :class="{ 'active': isActive(2) }" @click="itemClick(2)">
         <a class="stats-item-name"><i class="fa fa-fw fa-align-justify"></i><span>Code Lines</span></a>
       </li>
-      <li id="add-repo"
-          @click="addRepoClicked">
-        <i class="fa fa-plus"></i>
-        Add repository
-      </li>
     </ul>
   </div>
 </template>
 
 <script>
 import RepoSelector from 'components/RepoSelector.vue'
-import electron from 'electron'
-const ipc = electron.ipcRenderer
 
 export default {
   data () {
@@ -36,9 +29,6 @@ export default {
   components: {
     RepoSelector
   },
-  mounted () {
-    ipc.on('selected-directory', this.addRepo)
-  },
   methods: {
     isActive (index) {
       return index === this.activeIndex
@@ -46,21 +36,6 @@ export default {
     itemClick (index) {
       this.activeIndex = index
       this.$emit('sideBarClick', index)
-    },
-    addRepo (event, path) {
-      const name = _(path[0].split('/')).last()
-      this.$git.isGitRepo(path[0])
-        .then((repo) => {
-          this.repos.push({
-            name: name
-          })
-        })
-        .catch((error) => {
-          ipc.send('open-info-dialog', "This is not a Git Repository.")
-        })
-    },
-    addRepoClicked () {
-      ipc.send('open-file-dialog')
     }
   }
 }
