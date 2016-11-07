@@ -99,6 +99,12 @@ export default class Git {
             return
           }
 
+          // if (++count >= 90) {
+          //   history.emit('end')
+          //   history.end()
+          //   return
+          // }
+
           const commitDate = commit.date()
           const author = commit.author()
           const authorData = this._getAuthorData(author)
@@ -180,6 +186,7 @@ export default class Git {
             this.authorsData.push(this._authorsData[key])
           }
           showData()
+          console.log("Finish read data from cache.")
         })
       } else {
         console.log('Start walk through repo.')

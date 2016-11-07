@@ -54,8 +54,8 @@ export default {
     return {
       currentPage: 0,
       sortedDataCache: {},
-      initSortKey: 'Default',
-      sortKey: 'Default',
+      initSortKey: 'commits_count',
+      sortKey: '',
       emptyRow: 0,
       downSort: true,
       perPage: 12,
@@ -69,6 +69,9 @@ export default {
         'last_commit_time': 'Last time'
       },
     }
+  },
+  beforeMount () {
+    this.sortByKey(this.initSortKey)
   },
   computed: {
     totalPage () {
@@ -149,7 +152,7 @@ export default {
   margin-top: 30px;
   table-layout: fixed;
   position: relative;
-  z-index: -1;
+  z-index: 1;
   
   border-collapse: collapse;
 

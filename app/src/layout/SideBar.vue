@@ -52,6 +52,7 @@ export default {
   bottom: 0;
   border-right: 1px solid #e7e7e7;
   background: $light-black;
+  z-index: 9999;
 
   #add-repo {
     color: $white;
