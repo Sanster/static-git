@@ -22,7 +22,7 @@ export default class Git {
     this.firstCommitDate = new Date(2005, 1, 1)
     this.lastCommitDate = new Date(2030, 1, 1)
     this.lineCount = {}
-    this.storageKey = 'test2'
+    this.storageKey = 'test4'
   }
 
   _getAuthorData (author) {

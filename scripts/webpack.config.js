@@ -1,6 +1,5 @@
 var path = require('path')
 var webpack = require('webpack')
-var nodeExternals = require('webpack-node-externals')
 
 module.exports = {
   entry: path.resolve(__dirname, '../app/src/main.js'),
@@ -12,11 +11,11 @@ module.exports = {
   },
   target: 'electron',
   externals: [
-    nodeExternals({
-      'modulesDir': path.resolve(__dirname, '../node_modules/'),
-      // load non-javascript files with extensions, presumably via loaders
-      'whitelist': [/\.(?!(?:jsx?|json)$).{1,5}$/i]
-    })
+    function(context, request, callback) {
+      if(/^nodegit/.test(request))
+        return callback(null, 'commonjs' + " " + request);
+      callback();
+    },
   ],
   resolveLoader: {
     modules: ['node_modules', path.resolve(__dirname, '../node_modules')]
