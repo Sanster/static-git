@@ -1,9 +1,9 @@
 import moment from 'moment'
 
 export default class AuthorData {
-  constructor (author) {
-    this.name = author.name()
-    this.email = author.email()
+  constructor () {
+    this.name = ''
+    this.email = ''
     this.commits_count = 0
     this.total_additions = 0
     this.total_deletions = 0
@@ -12,6 +12,34 @@ export default class AuthorData {
     this.dates = []
     this.activeDays = []
     this.commitsCountByDay = {}
+  }
+
+  setAuthor (author) {
+    this.name = author.name()
+    this.email = author.email()
+  }
+
+  toStorage () {
+    return {
+      'name': this.name,
+      'email': this.email,
+      'commits_count': this.commits_count,
+      'total_additions': this.total_additions,
+      'total_deletions': this.total_deletions,
+      'first_commit_time': this.first_commit_time,
+      'last_commit_time': this.last_commit_time,
+      'dates': this.dates,
+      'activeDays': this.activeDays,
+      'commitsCountByDay': this.commitsCountByDay
+    }
+  }
+
+  fromStorage (storageData) {
+    for (var key in storageData) {
+      if (storageData.hasOwnProperty(key)) {
+        this[key] = storageData[key]
+      }
+    }
   }
 
   getActiveDays () {

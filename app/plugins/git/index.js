@@ -1,6 +1,7 @@
 import NodeGit from 'nodegit'
 import moment from 'moment'
 import AuthorData from './AuthorData.js'
+import storage from 'electron-json-storage'
 
 export default class Git {
   static install (Vue) {
@@ -18,17 +19,18 @@ export default class Git {
     this.app = app
     this._authorsData = {}
     this.authorsData = []
-    this._monthsData = {}
     this.firstCommitDate = new Date(2005, 1, 1)
     this.lastCommitDate = new Date(2030, 1, 1)
     this.lineCount = {}
+    this.storageKey = 'test2'
   }
 
   _getAuthorData (author) {
     const authorName = author.name()
 
     if (!this._authorsData.hasOwnProperty(authorName)) {
-      this._authorsData[authorName] = new AuthorData(author)
+      this._authorsData[authorName] = new AuthorData()
+      this._authorsData[authorName].setAuthor(author)
     }
     return this._authorsData[authorName]
   }
@@ -66,9 +68,24 @@ export default class Git {
     return NodeGit.Repository.open(path)
   }
 
-  collectData (showData) {
+  _saveStorageData () {
+    function toStorageData(authorData) {
+      return authorData.toStorage()
+    }
+
+    const storageData = {
+      "_authorsData": _.map(this._authorsData, toStorageData),
+      "firstCommitDate": this.firstCommitDate,
+      "lastCommitDate": this.lastCommitDate,
+      "lineCount": this.lineCount
+    }
+    storage.set(this.storageKey, storageData, function(error) {
+      if (error) throw error
+    });
+  }
+
+  _walkThroughRepo (showData) {
     NodeGit.Repository.open('/Users/cwq/gitlab-development-kit/gitlab')
-    // NodeGit.Repository.open('/Users/cwq/Github/static-git')
       .then((repo) => {
         return repo.getMasterCommit()
       })
@@ -79,12 +96,6 @@ export default class Git {
         history.on('commit', (commit) => {
           // exclude merge commit
           if (commit.parentcount() !== 1) {
-            return
-          }
-
-          if (++count >= 800) {
-            history.emit('end')
-            history.end()
             return
           }
 
@@ -121,7 +132,7 @@ export default class Git {
         })
 
         history.on('end', () => {
-          console.log('History walk end!')
+          console.log('History walk end, write data to json.')
 
           for (var key in this._authorsData) {
             const data = this._authorsData[key]
@@ -131,6 +142,7 @@ export default class Git {
             this.authorsData.push(data)
           }
           showData()
+          this._saveStorageData()
         })
 
         history.on('error', (error) => {
@@ -142,5 +154,38 @@ export default class Git {
       .catch((reason) => {
         console.log(reason)
       })
+  }
+
+  collectData (showData) {
+    storage.has(this.storageKey, (error, hasKey) => {
+      if (error) throw error
+      if (hasKey) {
+        storage.get(this.storageKey, (error, data) => {
+          if (error) throw error
+
+          console.log("Read data from cache.")
+
+          function fromStorageData(data) {
+            const authorData = new AuthorData()
+            authorData.fromStorage(data)
+            return authorData
+          }
+
+          this._authorsData = _.map(data._authorsData, fromStorageData)
+          this.firstCommitDate = data.firstCommitDate
+          this.lastCommitDate = data.lastCommitDate
+          this.lineCount = data.lineCount
+
+          for (var key in this._authorsData) {
+            this.authorsData.push(this._authorsData[key])
+          }
+          showData()
+        })
+      } else {
+        console.log('Start walk through repo.')
+        this._walkThroughRepo(showData)
+      }
+    })
+
   }
 }
