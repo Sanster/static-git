@@ -24,6 +24,7 @@ import AuthorList from 'components/AuthorList.vue'
 import MonthCommits from 'components/MonthCommits.vue'
 import CodeLines from 'components/CodeLines.vue'
 import SideBar from 'layout/SideBar.vue'
+import moment from 'moment'
 
 export default {
   data () {
@@ -80,8 +81,8 @@ export default {
           additions: item.additions.total,
           deletions: item.deletions.total,
           activeDay: item.commitsCount.validDayCount(),
-          firstCommitTime: item.firstCommitTime,
-          lastCommitTime: item.lastCommitTime
+          firstCommitTime: moment(item.firstCommitTime).format('L'),
+          lastCommitTime: moment(item.lastCommitTime).format('L')
         }
       })
     },

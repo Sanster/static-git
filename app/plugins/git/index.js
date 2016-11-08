@@ -21,7 +21,7 @@ export default class Git {
     this.firstCommitDate = new Date(2005, 1, 1)
     this.lastCommitDate = new Date(2030, 1, 1)
     this.lineCount = {}
-    this._maxCommitsWalkCount = 2
+    this._maxCommitsWalkCount = 100
     this.storageKey = 'test7'
   }
 
