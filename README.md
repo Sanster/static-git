@@ -6,5 +6,8 @@
 - Electron
 - Nodegit
 - chart.js
+- webpack
+- ES6(babel)
 
+Trello: [Static-git](https://trello.com/b/UOimv6sJ/git-stats)
 ![snapshot](./app/media/snapshot1.png)
