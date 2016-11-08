@@ -11,11 +11,13 @@
       </li>
     </ul>
   </div>
+  <author-list :options="options"></author-list>
 </div>
 </template>
 
 <script>
 import Chart from 'chart.js'
+import AuthorList from 'components/AuthorList.vue'
 
 export default {
   props: [
@@ -33,6 +35,9 @@ export default {
   created () {
     this.sortedData = this.authorsData
     this.calYearData()
+  },
+  components: {
+    'author-list': AuthorList
   },
   computed: {
     monthCommitsCount () {

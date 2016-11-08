@@ -1,17 +1,15 @@
 import moment from 'moment'
+import DateData from './DateData.js'
 
 export default class AuthorData {
   constructor () {
     this.name = ''
     this.email = ''
-    this.commits_count = 0
-    this.total_additions = 0
-    this.total_deletions = 0
-    this.first_commit_time = new Date(2030, 1, 1)
-    this.last_commit_time = new Date(2005, 1, 1)
-    this.dates = []
-    this.activeDays = []
-    this.commitsCountByDay = {}
+    this.firstCommitTime = new Date(2030, 1, 1)
+    this.lastCommitTime = new Date(2005, 1, 1)
+    this.commitsCount = new DateData()
+    this.additions = new DateData()
+    this.deletions = new DateData()
   }
 
   setAuthor (author) {
@@ -23,14 +21,11 @@ export default class AuthorData {
     return {
       'name': this.name,
       'email': this.email,
-      'commits_count': this.commits_count,
-      'total_additions': this.total_additions,
-      'total_deletions': this.total_deletions,
-      'first_commit_time': this.first_commit_time,
-      'last_commit_time': this.last_commit_time,
-      'dates': this.dates,
-      'activeDays': this.activeDays,
-      'commitsCountByDay': this.commitsCountByDay
+      'firstCommitTime': this.firstCommitTime,
+      'lastCommitTime': this.lastCommitTime,
+      'commitsCount': this.commitsCount,
+      'additions': this.additions,
+      'deletions': this.deletions
     }
   }
 
@@ -56,52 +51,15 @@ export default class AuthorData {
     return result
   }
 
-  getMonthCommitsCount (year, month) {
-    if (this.commitsCountByDay.hasOwnProperty(year)) {
-      return this.commitsCountByDay[year][month].count
-    } else {
-      return 0
-    }
-
-  }
-
-  getYearCommitsCount (year) {
-    return this.commitsCountByDay[year].count
-  }
-
   saveCommitDate (commitDate) {
-    if (this.first_commit_time > commitDate) {
-      this.first_commit_time = commitDate
+    if (this.firstCommitTime > commitDate) {
+      this.firstCommitTime = commitDate
     }
 
-    if (this.last_commit_time < commitDate) {
-      this.last_commit_time = commitDate
+    if (this.lastCommitTime < commitDate) {
+      this.lastCommitTime = commitDate
     }
 
-    const year = commitDate.getFullYear()
-    const month = commitDate.getMonth()
-    const day = commitDate.getDate()
-
-    if (!this.commitsCountByDay.hasOwnProperty(year)) {
-      this.commitsCountByDay[year] = this._getInitCommitsCount()
-    }
-
-    this.commitsCountByDay[year]['count'] += 1
-    this.commitsCountByDay[year][month]['count'] += 1
-    this.commitsCountByDay[year][month][day] += 1
-  }
-
-  _getInitCommitsCount () {
-    const commitsCountByDay = { 'count': 0 }
-
-    for (var month = 0; month < 12; ++month) {
-      var dayCount = { 'count': 0 }
-      for (var day = 0; day < 31; ++day) {
-        dayCount[day] = 0
-      }
-      commitsCountByDay[month] = dayCount
-    }
-
-    return commitsCountByDay
+    this.commitsCount.increase(commitDate)
   }
 }

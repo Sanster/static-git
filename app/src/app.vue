@@ -29,7 +29,37 @@ export default {
   data () {
     return {
       dataCollectDone: false,
-      statsIndex: 0
+      statsIndex: 0,
+      authorListFields:[
+        {
+          label: 'Name',
+          key: 'name'
+        },
+        {
+          label: 'Commits',
+          key: 'commits'
+        },
+        {
+          label: 'Line ++',
+          key: 'additions'
+        },
+        {
+          label: 'Line --',
+          key: 'deletions'
+        },
+        {
+          label: 'Active Days',
+          key: 'activeDay'
+        },
+        {
+          label: 'First time',
+          key: 'firstCommitTime'
+        },
+        {
+          label: 'Last time',
+          key: 'lastCommitTime'
+        }
+      ],
     }
   },
   components: {
@@ -42,8 +72,18 @@ export default {
     this.$git.collectData(this.showData)
   },
   computed: {
-    authorsData () {
-      return this.$git.authorsData
+    authorListData () {
+      return _.map(this.$git.authorsData, (item) => {
+        return {
+          name: item.name,
+          commits: item.commitsCount.total,
+          additions: item.additions.total,
+          deletions: item.deletions.total,
+          activeDay: item.commitsCount.validDayCount(),
+          firstCommitTime: item.firstCommitTime,
+          lastCommitTime: item.lastCommitTime
+        }
+      })
     },
     currentView () {
       if (this.statsIndex === 0) {
@@ -57,7 +97,9 @@ export default {
     options () {
       if (this.statsIndex === 0) {
         return {
-          authorsData: this.authorsData
+          fields: this.authorListFields,
+          data: this.authorListData,
+          perPage: 12
         }
       } else if (this.statsIndex === 1) {
         return {

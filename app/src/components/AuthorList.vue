@@ -3,34 +3,29 @@
   <table id="author-list">
     <thead>
       <tr>
-        <th v-for="(field, key) in fields"
-            @click="sortByKey(key)"
-            :class="key + '__col'">
+        <th v-for="field in fields"
+            @click="sortByKey(field.key)"
+            :class="field.key + '__col'">
           <div class="field__header"
                :class="headClass">
-            <a href="#">{{field}}</a>
+            <a href="#">{{field.label}}</a>
             <i class="fa fa-caret-down sort-icon"
-               v-show="key == sortKey"></i>
+               v-show="field.key == sortKey"></i>
           </div>
         </th>
       </tr>
     </thead>
     <tbody v-cloak>
       <tr v-for="data in pageData">
-        <td v-for="(field, key) in fields">
-          <div :class="key + '__col'">
-            <template v-if="Array.isArray(data[key])">
-              {{data[key].length}}
-            </template>
-            <template v-else>
-              {{data[key]}}
-            </template>
+        <td v-for="field in fields">
+          <div :class="field.key + '__col'">
+            {{data[field.key]}}
           </div>
         </td>
       <tr>
       <tr v-for="n in emptyRow"
           class="empty-row">
-        <td v-for="j in Object.keys(fields).length"></td>
+        <td v-for="j in fields.length"></td>
       </tr>
     </tbody>
   </table>
@@ -57,17 +52,7 @@ export default {
       initSortKey: 'commits_count',
       sortKey: '',
       emptyRow: 0,
-      downSort: true,
-      perPage: 12,
-      fields: {
-        'name': 'Name',
-        'commits_count': 'Commits',
-        'total_additions': 'Line ++',
-        'total_deletions': 'Line --',
-        'activeDays': 'Active Day',
-        'first_commit_time': 'First time',
-        'last_commit_time': 'Last time'
-      },
+      downSort: true
     }
   },
   beforeMount () {
@@ -75,22 +60,31 @@ export default {
   },
   computed: {
     totalPage () {
-      return Math.ceil(this.options.authorsData.length / this.perPage)
+      return Math.ceil(this.data.length / this.perPage)
     },
     pageData () {
       const cacheKey = this.cacheKey()
 
       if (!this.sortedDataCache.hasOwnProperty(cacheKey)) {
-        this.sortedDataCache[cacheKey] = this.options.authorsData
+        this.sortedDataCache[cacheKey] = this.data
       }
 
-      const data = this.sortedDataCache[cacheKey].slice(this.currentPage * this.perPage,
+      const sliceData = this.sortedDataCache[cacheKey].slice(this.currentPage * this.perPage,
                                                         (this.currentPage + 1) * this.perPage)
-      this.emptyRow = this.perPage - data.length
-      return data
+      this.emptyRow = this.perPage - sliceData.length
+      return sliceData
     },
     headClass () {
       return this.downSort ? 'down' : 'up'
+    },
+    fields () {
+      return this.options.fields
+    },
+    data () {
+      return this.options.data
+    },
+    perPage () {
+      return this.options.perPage
     }
   },
   methods: {
@@ -130,7 +124,7 @@ export default {
 
       if (!this.sortedDataCache.hasOwnProperty(cacheKey)) {
         // Save the copy of authorsData
-        this.sortedDataCache[cacheKey] = this.options.authorsData.slice().sort(this.compareKey(key))
+        this.sortedDataCache[cacheKey] = this.data.slice().sort(this.compareKey(key))
       }
     },
     cacheKey () {
@@ -153,7 +147,7 @@ export default {
   table-layout: fixed;
   position: relative;
   z-index: 1;
-  
+
   border-collapse: collapse;
 
   tbody {

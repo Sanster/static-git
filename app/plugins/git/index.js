@@ -17,22 +17,22 @@ export default class Git {
 
   init (app) {
     this.app = app
-    this._authorsData = {}
-    this.authorsData = []
+    this.authorsData = {}
     this.firstCommitDate = new Date(2005, 1, 1)
     this.lastCommitDate = new Date(2030, 1, 1)
     this.lineCount = {}
-    this.storageKey = 'test4'
+    this._maxCommitsWalkCount = 2
+    this.storageKey = 'test7'
   }
 
   _getAuthorData (author) {
     const authorName = author.name()
 
-    if (!this._authorsData.hasOwnProperty(authorName)) {
-      this._authorsData[authorName] = new AuthorData()
-      this._authorsData[authorName].setAuthor(author)
+    if (!this.authorsData.hasOwnProperty(authorName)) {
+      this.authorsData[authorName] = new AuthorData()
+      this.authorsData[authorName].setAuthor(author)
     }
-    return this._authorsData[authorName]
+    return this.authorsData[authorName]
   }
 
   _calLineCount (stats, commitDate) {
@@ -47,7 +47,6 @@ export default class Git {
     const changeLines = stats.total_additions - stats.total_deletions
 
     this.lineCount[year][month] += changeLines
-    // this.lineCount[year][month][day] += changeLines
   }
 
   _getInitLineCount() {
@@ -74,7 +73,7 @@ export default class Git {
     }
 
     const storageData = {
-      "_authorsData": _.map(this._authorsData, toStorageData),
+      "authorsData": _.map(this.authorsData, toStorageData),
       "firstCommitDate": this.firstCommitDate,
       "lastCommitDate": this.lastCommitDate,
       "lineCount": this.lineCount
@@ -92,24 +91,24 @@ export default class Git {
       .then((firstCommitOnMaster) => {
         var history = firstCommitOnMaster.history()
 
-        var count = 0
+        let count = 0
+        let asyncCount = 0
         history.on('commit', (commit) => {
           // exclude merge commit
           if (commit.parentcount() !== 1) {
             return
           }
 
-          // if (++count >= 90) {
-          //   history.emit('end')
-          //   history.end()
-          //   return
-          // }
+          count += 1
+          if (count > this._maxCommitsWalkCount) {
+            history.removeAllListeners('commit')
+            return
+          }
 
           const commitDate = commit.date()
           const author = commit.author()
           const authorData = this._getAuthorData(author)
 
-          authorData.dates.push(commitDate)
           authorData.saveCommitDate(commitDate)
 
           if (this.firstCommitDate > commitDate) {
@@ -120,18 +119,28 @@ export default class Git {
             this.lastCommitDate = commitDate
           }
 
+          let asyncCounted = false
           commit.getDiff()
             .then((arrayDiff) => {
-              arrayDiff.forEach((diff) => {
+              let size = arrayDiff.length
+              arrayDiff.forEach((diff, index) => {
                 diff.patches()
                   .then((arrayPatch) => {
                     arrayPatch.forEach((patch) => {
                       const stats = patch.lineStats()
                       this._calLineCount(stats, commitDate)
-                      authorData.commits_count += 1
-                      authorData.total_additions += stats.total_additions
-                      authorData.total_deletions += stats.total_deletions
+                      authorData.additions.increase(commitDate, stats.total_additions)
+                      authorData.deletions.increase(commitDate, stats.total_deletions)
                     })
+                  })
+                  .then(()=>{
+                    if (asyncCounted === false) {
+                      asyncCounted = true
+                      asyncCount += 1
+                    }
+                    if (index === size - 1 && asyncCount > _maxCommitsWalkCount) {
+                      history.emit('end')
+                    }
                   })
               })
             })
@@ -140,13 +149,6 @@ export default class Git {
         history.on('end', () => {
           console.log('History walk end, write data to json.')
 
-          for (var key in this._authorsData) {
-            const data = this._authorsData[key]
-            data.first_commit_time = moment(data.first_commit_time).format('L')
-            data.last_commit_time = moment(data.first_commit_time).format('L')
-            data.activeDays = data.getActiveDays()
-            this.authorsData.push(data)
-          }
           showData()
           this._saveStorageData()
         })
@@ -165,7 +167,7 @@ export default class Git {
   collectData (showData) {
     storage.has(this.storageKey, (error, hasKey) => {
       if (error) throw error
-      if (hasKey) {
+      if (false) {
         storage.get(this.storageKey, (error, data) => {
           if (error) throw error
 
@@ -177,14 +179,15 @@ export default class Git {
             return authorData
           }
 
-          this._authorsData = _.map(data._authorsData, fromStorageData)
+          this.authorsData = _.map(data.authorsData, fromStorageData)
           this.firstCommitDate = data.firstCommitDate
           this.lastCommitDate = data.lastCommitDate
           this.lineCount = data.lineCount
 
-          for (var key in this._authorsData) {
-            this.authorsData.push(this._authorsData[key])
+          for (var key in this.authorsData) {
+            this.authorsData.push(this.authorsData[key])
           }
+
           showData()
           console.log("Finish read data from cache.")
         })
