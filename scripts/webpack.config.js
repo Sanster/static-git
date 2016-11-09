@@ -30,6 +30,7 @@ module.exports = {
       style: path.join(__dirname, '../app/src/stylesheet'),
       components: path.join(__dirname, '../app/src/components'),
       layout: path.join(__dirname, '../app/src/layout'),
+      utils: path.join(__dirname, '../app/src/utils')
     }
   },
   module: {

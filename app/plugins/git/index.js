@@ -1,6 +1,7 @@
 import NodeGit from 'nodegit'
 import moment from 'moment'
 import AuthorData from './AuthorData.js'
+import RepoData from './RepoData.js'
 import storage from 'electron-json-storage'
 
 export default class Git {
@@ -18,11 +19,10 @@ export default class Git {
   init (app) {
     this.app = app
     this.authorsData = {}
-    this.firstCommitDate = new Date(2005, 1, 1)
-    this.lastCommitDate = new Date(2030, 1, 1)
     this.lineCount = {}
     this._maxCommitsWalkCount = 100
     this.storageKey = 'test7'
+    this.repoData = new RepoData()
   }
 
   _getAuthorData (author) {
@@ -35,33 +35,19 @@ export default class Git {
     return this.authorsData[authorName]
   }
 
-  _calLineCount (stats, commitDate) {
-    const year = commitDate.getFullYear()
-    const month = commitDate.getMonth()
-    const day = commitDate.getDate()
+  // _calLineCount (stats, commitDate) {
+  //   const year = commitDate.getFullYear()
+  //   const month = commitDate.getMonth()
+  //   const day = commitDate.getDate()
 
-    if (!this.lineCount.hasOwnProperty(year)) {
-      this.lineCount[year] = this._getInitLineCount()
-    }
+  //   if (!this.lineCount.hasOwnProperty(year)) {
+  //     this.lineCount[year] = this._getInitLineCount()
+  //   }
 
-    const changeLines = stats.total_additions - stats.total_deletions
+  //   const changeLines = stats.total_additions - stats.total_deletions
 
-    this.lineCount[year][month] += changeLines
-  }
-
-  _getInitLineCount() {
-    const initLinesCount = []
-
-    for (var month = 0; month < 12; ++month) {
-      var dayCount = []
-      // for (var day = 0; day < 31; ++day) {
-      //   dayCount.push(0)
-      // }
-      initLinesCount.push(0)
-    }
-
-    return initLinesCount
-  }
+  //   this.lineCount[year][month] += changeLines
+  // }
 
   isGitRepo (path) {
     return NodeGit.Repository.open(path)
@@ -74,8 +60,6 @@ export default class Git {
 
     const storageData = {
       "authorsData": _.map(this.authorsData, toStorageData),
-      "firstCommitDate": this.firstCommitDate,
-      "lastCommitDate": this.lastCommitDate,
       "lineCount": this.lineCount
     }
     storage.set(this.storageKey, storageData, function(error) {
@@ -110,14 +94,7 @@ export default class Git {
           const authorData = this._getAuthorData(author)
 
           authorData.saveCommitDate(commitDate)
-
-          if (this.firstCommitDate > commitDate) {
-            this.firstCommitDate = commitDate
-          }
-
-          if (this.lastCommitDate < commitDate) {
-            this.lastCommitDate = commitDate
-          }
+          this.repoData.saveCommitDate(commitDate)
 
           let asyncCounted = false
           commit.getDiff()
@@ -128,9 +105,13 @@ export default class Git {
                   .then((arrayPatch) => {
                     arrayPatch.forEach((patch) => {
                       const stats = patch.lineStats()
-                      this._calLineCount(stats, commitDate)
-                      authorData.additions.increase(commitDate, stats.total_additions)
-                      authorData.deletions.increase(commitDate, stats.total_deletions)
+                      // this._calLineCount(stats, commitDate)
+                      let add = stats.total_additions
+                      let del = stats.total_deletions
+                      this.repoData.additions.increaseByDate(commitDate, add)
+                      this.repoData.deletions.increaseByDate(commitDate, del)
+                      authorData.additions.increaseByDate(commitDate, add)
+                      authorData.deletions.increaseByDate(commitDate, del)
                     })
                   })
                   .then(()=>{
@@ -180,8 +161,6 @@ export default class Git {
           }
 
           this.authorsData = _.map(data.authorsData, fromStorageData)
-          this.firstCommitDate = data.firstCommitDate
-          this.lastCommitDate = data.lastCommitDate
           this.lineCount = data.lineCount
 
           for (var key in this.authorsData) {
@@ -196,6 +175,17 @@ export default class Git {
         this._walkThroughRepo(showData)
       }
     })
+  }
 
+// remove 0 commits author during date
+  authorsDataDuringDate (startDate, endDate) {
+    const res = {}
+    _.forEach(this.authorsData, (item, name) => {
+      if (item.commitsCount.totalDuringDate(startDate, endDate) !== 0) {
+        res[name] = item
+      }
+    })
+
+    return res
   }
 }

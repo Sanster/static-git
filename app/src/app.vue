@@ -104,7 +104,7 @@ export default {
         }
       } else if (this.statsIndex === 1) {
         return {
-          authorsData: this.authorsData
+          authorsData: this.$git.authorsData
         }
       } else if (this.statsIndex === 2) {
         return {

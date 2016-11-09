@@ -1,26 +1,17 @@
-import moment from 'moment'
 import DateData from 'utils/DateData.js'
 
-export default class AuthorData {
+export default class RepoData {
   constructor () {
-    this.name = ''
-    this.email = ''
     this.firstCommitTime = new Date(2030, 1, 1)
     this.lastCommitTime = new Date(2005, 1, 1)
     this.commitsCount = new DateData()
     this.additions = new DateData()
     this.deletions = new DateData()
-  }
-
-  setAuthor (author) {
-    this.name = author.name()
-    this.email = author.email()
+    this.codeLines = new DateData()
   }
 
   toStorage () {
     return {
-      'name': this.name,
-      'email': this.email,
       'firstCommitTime': this.firstCommitTime,
       'lastCommitTime': this.lastCommitTime,
       'commitsCount': this.commitsCount,
