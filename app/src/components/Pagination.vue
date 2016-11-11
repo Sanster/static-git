@@ -1,5 +1,5 @@
 <template>
-<div class="pagination">
+<div class="pagination" :style="{ width: page * 30 + 'px' }">
   <button class="btn-prev"
           :class="{disabled: this.currentPage === 0}"
           @click="prev">
@@ -67,7 +67,6 @@ export default {
 @import '../stylesheet/vars.scss';
 
 .pagination {
-  width: 180px;
   margin: auto;
   position: relative;
   padding-left: 25px;
@@ -93,7 +92,7 @@ export default {
       &.active {
         background: $light-black;
         cursor: default;
-        border-radius: 15px;
+        border-radius: 2px;
 
         a {
           color: white;
