@@ -6,11 +6,17 @@
     <i class="fa fa-chevron-left"></i>
   </button>
   <ul>
+    <!--<li>
+      <span class="gap">...</span>
+    </li>-->
     <li v-for="(n, index) in page"
         @click="loadPage(index)"
         :class="{ 'active': isActive(index) }">
-        <a href="#">{{n}}</a>
+        <a href="#">{{n + pageOffSet}}</a>
     </li>
+    <!--<li>
+      <span class="gap">...</span>
+    </li>-->
   </ul>
   <button class="btn-next"
           :class="{disabled: this.currentPage === this.total - 1}"
@@ -29,34 +35,48 @@ export default {
   data () {
     return {
       currentPage: 0,
-      maxPage: 6
+      maxPage: 5,
+      pageOffSet: 0
     }
   },
   computed: {
     page () {
-      return this.total > this.maxPage ? this.maxPage : this.total
+       return this.total > this.maxPage ? this.maxPage : this.total
     }
   },
   methods: {
     loadPage (page) {
-      if (page !== this.currentPage) {
-        this.currentPage = page
-        this.$emit('currentChange', this.currentPage)
+      if (page === this.currentPage) {
+        return
       }
+      this.currentPage = page + this.pageOffSet
+      this.$emit('currentChange', this.currentPage)
     },
     isActive (page) {
-      return this.currentPage === page
+      return this.currentPage ===  page + this.pageOffSet
     },
     prev () {
       if (this.currentPage > 0) {
         this.currentPage -= 1
+        this.checkOverLeft()
         this.$emit('currentChange', this.currentPage)
       }
     },
     next () {
       if (this.currentPage < this.total - 1) {
         this.currentPage += 1
+        this.checkOverRight()
         this.$emit('currentChange', this.currentPage)
+      }
+    },
+    checkOverRight () {
+      if (this.currentPage >= this.page) {
+        this.pageOffSet += 1
+      }
+    },
+    checkOverLeft () {
+      if (this.currentPage < this.pageOffSet && this.pageOffSet > 0) {
+        this.pageOffSet -= 1
       }
     }
   }
@@ -80,6 +100,10 @@ export default {
     margin: 0px;
     margin-top: 10px;
     margin-bottom: 10px;
+
+    .gap {
+      cursor: default;
+    }
 
     li {
       float:left;
