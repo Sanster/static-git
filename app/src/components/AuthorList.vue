@@ -48,7 +48,6 @@ export default {
   data () {
     return {
       currentPage: 0,
-      sortedDataCache: {},
       initSortKey: 'commits_count',
       sortKey: '',
       emptyRow: 0,
@@ -63,13 +62,7 @@ export default {
       return Math.ceil(this.data.length / this.perPage)
     },
     pageData () {
-      const cacheKey = this.cacheKey()
-
-      if (!this.sortedDataCache.hasOwnProperty(cacheKey)) {
-        this.sortedDataCache[cacheKey] = this.data
-      }
-
-      const sliceData = this.sortedDataCache[cacheKey].slice(this.currentPage * this.perPage,
+      const sliceData = this.data.slice(this.currentPage * this.perPage,
                                                         (this.currentPage + 1) * this.perPage)
       this.emptyRow = this.perPage - sliceData.length
       return sliceData
@@ -120,19 +113,7 @@ export default {
         this.sortKey = key
       }
 
-      const cacheKey = this.cacheKey()
-
-      if (!this.sortedDataCache.hasOwnProperty(cacheKey)) {
-        // Save the copy of authorsData
-        this.sortedDataCache[cacheKey] = this.data.slice().sort(this.compareKey(key))
-      }
-    },
-    cacheKey () {
-      if (this.downSort) {
-        return this.sortKey + '-down-sort'
-      } else {
-        return this.sortKey + '-up-sort'
-      }
+      this.data.sort(this.compareKey(key))
     }
   }
 }

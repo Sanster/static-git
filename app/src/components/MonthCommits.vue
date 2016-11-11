@@ -17,7 +17,6 @@ export default {
   data () {
     return {
       monthData: [],
-      sortedData: [],
       selectedYear: '2016',
       selectedMonth: 5,
       authorListFields: [
@@ -54,7 +53,6 @@ export default {
     authorListOptions () {
       const startDate = new Date(this.selectedYear, this.selectedMonth)
       const endDate = new Date(this.selectedYear, this.selectedMonth + 1)
-
       return {
         fields: this.authorListFields,
         data: this.authorListData(startDate, endDate),
@@ -64,7 +62,6 @@ export default {
   },
   methods: {
     authorListData (startDate, endDate) {
-      console.log(this.$git.authorsDataDuringDate(startDate, endDate))
       return _.map(this.$git.authorsDataDuringDate(startDate, endDate), (item) => {
         return {
           name: item.name,
@@ -78,9 +75,6 @@ export default {
     barClick (event, data) {
       if (data.length !== 0) {
         this.selectedMonth = data[0]._index
-        this.sortedData = _.sortBy(this.authorsData, (authorData) => {
-          return -authorData.getMonthCommitsCount(this.selectedYear, this.selectedMonth)
-        })
       }
     },
   },
