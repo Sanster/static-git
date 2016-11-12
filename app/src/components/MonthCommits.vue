@@ -1,8 +1,12 @@
 <template>
-<div>
-  <canvas id='month-commits' width='500' height='350'></canvas>
-  <author-list :options="authorListOptions"></author-list>
-</div>
+  <div class='month-commits'>
+    <div class='container card'>
+      <div class='month-commits-canvas-container'>
+        <canvas id='month-commits-canvas'></canvas>
+      </div>
+    </div>
+    <author-list :options="authorListOptions"></author-list>
+  </div>
 </template>
 
 <script>
@@ -79,7 +83,7 @@ export default {
     },
   },
   mounted () {
-    var ctx = document.getElementById('month-commits')
+    var ctx = document.getElementById('month-commits-canvas')
 
     new Chart(ctx, {
       type: 'bar',
@@ -93,7 +97,7 @@ export default {
         }]
       },
       options: {
-        responsive: false,
+        maintainAspectRatio: false,
         onClick: this.barClick,
         title: {
           display: true,
@@ -115,11 +119,18 @@ export default {
 </script>
 
 <style lang="sass">
-#month-commits {
-  float: left;
-}
+.month-commits {
+  width: 100%;
 
-#month-commits-sum {
-  float: left;
+  .container {
+    width: 100%;
+    background: white;
+  }
+
+  .month-commits-canvas-container {
+    height: 350px;
+    width: 90%;
+    margin: auto;
+  }
 }
 </style>

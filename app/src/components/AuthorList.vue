@@ -1,38 +1,38 @@
 <template>
-<div>
-  <table id="author-list">
-    <thead>
-      <tr>
-        <th v-for="field in fields"
-            @click="sortByKey(field.key)"
-            :class="field.key + '__col'">
-          <div class="field__header"
-               :class="headClass">
-            <a href="#">{{field.label}}</a>
-            <i class="fa fa-caret-down sort-icon"
-               v-show="field.key == sortKey"></i>
-          </div>
-        </th>
-      </tr>
-    </thead>
-    <tbody v-cloak>
-      <tr v-for="data in pageData">
-        <td v-for="field in fields">
-          <div :class="field.key + '__col'">
-            {{data[field.key]}}
-          </div>
-        </td>
-      <tr>
-      <tr v-for="n in emptyRow"
-          class="empty-row">
-        <td v-for="j in fields.length"></td>
-      </tr>
-    </tbody>
-  </table>
-  <pagination :total="totalPage"
-              v-on:currentChange="pageChange"></pagination>
-</div>
-
+  <div class="author-list card">
+    <table class="author-list-table">
+      <thead>
+        <tr>
+          <th v-for="field in fields"
+              @click.prevent="sortByKey(field.key)"
+              :class="field.key + '__col'">
+            <div class="field__header"
+                :class="headClass">
+              <a href="#">{{field.label}}</a>
+              <i class="fa fa-caret-down sort-icon"
+                v-show="field.key == sortKey"></i>
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody v-cloak>
+        <tr v-for="data in pageData()">
+          <td v-for="field in fields">
+            <div :class="field.key + '__col'">
+              {{data[field.key]}}
+            </div>
+          </td>
+        <tr>
+        <tr v-for="n in emptyRow"
+            class="empty-row">
+          <td v-for="j in fields.length"></td>
+        </tr>
+      </tbody>
+    </table>
+    <pagination :total="totalPage"
+                v-show="totalPage > 1"
+                v-on:currentChange="pageChange"></pagination>
+  </div>
 </template>
 
 <script>
@@ -48,7 +48,7 @@ export default {
   data () {
     return {
       currentPage: 0,
-      initSortKey: 'commits_count',
+      initSortKey: 'commits',
       sortKey: '',
       emptyRow: 0,
       downSort: true
@@ -60,12 +60,6 @@ export default {
   computed: {
     totalPage () {
       return Math.ceil(this.data.length / this.perPage)
-    },
-    pageData () {
-      const sliceData = this.data.slice(this.currentPage * this.perPage,
-                                                        (this.currentPage + 1) * this.perPage)
-      this.emptyRow = this.perPage - sliceData.length
-      return sliceData
     },
     headClass () {
       return this.downSort ? 'down' : 'up'
@@ -83,6 +77,13 @@ export default {
   methods: {
     pageChange (page) {
       this.currentPage = page
+    },
+    pageData () {
+      const sliceData = this.data.slice(this.currentPage * this.perPage,
+                                        (this.currentPage + 1) * this.perPage)
+
+      this.emptyRow = this.perPage - sliceData.length
+      return sliceData
     },
     compareKey (key) {
       const downSort = this.downSort
@@ -120,15 +121,22 @@ export default {
 </script>
 
 <style lang="sass">
-#author-list {
+@import '../stylesheet/vars.scss';
+
+.author-list {
+  padding-top: 30px;
+  padding-bottom: 20px;
+  margin-top: 20px;
+  background: white;
+}
+
+.author-list-table {
   font-size: 15px;
   width: 90%;
   margin: auto;
-  margin-top: 30px;
   table-layout: fixed;
   position: relative;
   z-index: 1;
-
   border-collapse: collapse;
 
   tbody {
@@ -138,14 +146,10 @@ export default {
   }
 
   th {
-    background-color: #4CAF50;
-    color: white;
     cursor: pointer;
-    border-right: 1px solid #ddd;
-    -webkit-user-select: none;
 
     a {
-      color: #fff;
+      color: #131212;
     }
 
     .field__header {
@@ -159,12 +163,13 @@ export default {
   }
 
   th, td {
-    padding: 6px;
+    padding: 9px;
     text-align: center;
+    border-bottom: 1px solid #e6e6e6;
   }
 
   td {
-    height: 16px;
+    height: 22px;
     cursor: pointer;
   }
 

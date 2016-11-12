@@ -8,11 +8,13 @@
     <transition name="fade">
       <div class="content"
           v-if="dataCollectDone">
-        <transition name="fade" mode="out-in">
-          <keep-alive>
-            <component :is="currentView" :options="options"></component>
-          </keep-alive>
-        </transition>
+        <div class="content-detail">
+          <transition name="fade" mode="out-in">
+            <keep-alive>
+              <component :is="currentView" :options="options"></component>
+            </keep-alive>
+          </transition>
+        </div>
       </div>
     </transition>
   </div>
@@ -134,14 +136,5 @@ body {
 
 .header {
   margin-left: 220px;
-}
-
-.content {
-  margin-left: 220px;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  overflow-x: auto;
 }
 </style>

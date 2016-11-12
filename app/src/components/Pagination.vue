@@ -86,20 +86,27 @@ export default {
 <style lang="sass">
 @import '../stylesheet/vars.scss';
 
+$pagination-height: 36px;
+$page-li-padding: 3px;
+$page-li-height: 20px;
+$border-width: 1px;
+$page-ul-top: ($pagination-height - $page-li-height - $page-li-padding * 2 - $border-width * 2) / 2;
+
 .pagination {
   margin: auto;
   position: relative;
   padding-left: 25px;
   padding-right: 25px;
-  height: 50px;
+  margin-top: 10px;
+  height: $pagination-height;
 
   ul {
     display: inline-block;
     list-style-type: none;
     padding-left: 0px;
     margin: 0px;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    position: relative;
+    top: $page-ul-top;
 
     .gap {
       cursor: default;
@@ -107,19 +114,17 @@ export default {
 
     li {
       float:left;
-      padding: 5px;
+      padding: $page-li-padding;
       cursor: pointer;
-      width: 20px;
+      width: $page-li-height;
       text-align: center;
       font-size: 17px;
 
       &.active {
-        background: $light-black;
         cursor: default;
-        border-radius: 2px;
+        border: solid $border-width $light-black;
 
         a {
-          color: white;
           cursor: default;
         }
       }
@@ -140,10 +145,8 @@ export default {
 
   .btn-next, .btn-prev {
     position: absolute;
+    height: 100%;
     top: 0;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    height: 30px;
     border: 0px;
     background: transparent;
     font-size: 15px;

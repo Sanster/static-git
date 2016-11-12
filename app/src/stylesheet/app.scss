@@ -17,3 +17,23 @@ a {
     @include transition(transform .3s);
   }
 }
+
+.content {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: #f7f7f7;
+  margin-left: $sidebar-width;
+}
+
+.content-detail {
+  width: 90%;
+  margin: auto;
+  margin-top: 40px;
+}
+
+.card {
+  box-shadow: 1px 1px 4px 1px #d2cfcf;
+}
