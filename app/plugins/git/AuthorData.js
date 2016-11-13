@@ -2,39 +2,29 @@ import moment from 'moment'
 import DateData from 'utils/DateData.js'
 
 export default class AuthorData {
-  constructor () {
-    this.name = ''
-    this.email = ''
-    this.firstCommitTime = new Date(2030, 1, 1)
-    this.lastCommitTime = new Date(2005, 1, 1)
-    this.commitsCount = new DateData()
-    this.additions = new DateData()
-    this.deletions = new DateData()
+  constructor (data) {
+    if (data) {
+      this.name = data.name
+      this.email = data.email
+      this.firstCommitTime = data.firstCommitTime
+      this.lastCommitTime = data.lastCommitTime
+      this.commitsCount = new DateData(data.commitsCount)
+      this.additions = new DateData(data.additions)
+      this.deletions = new DateData(data.deletions)
+    } else {
+      this.name = ''
+      this.email = ''
+      this.firstCommitTime = new Date(2030, 1, 1)
+      this.lastCommitTime = new Date(2005, 1, 1)
+      this.commitsCount = new DateData()
+      this.additions = new DateData()
+      this.deletions = new DateData()
+    }
   }
 
   setAuthor (author) {
     this.name = author.name()
     this.email = author.email()
-  }
-
-  toStorage () {
-    return {
-      'name': this.name,
-      'email': this.email,
-      'firstCommitTime': this.firstCommitTime,
-      'lastCommitTime': this.lastCommitTime,
-      'commitsCount': this.commitsCount,
-      'additions': this.additions,
-      'deletions': this.deletions
-    }
-  }
-
-  fromStorage (storageData) {
-    for (var key in storageData) {
-      if (storageData.hasOwnProperty(key)) {
-        this[key] = storageData[key]
-      }
-    }
   }
 
   saveCommitDate (commitDate) {

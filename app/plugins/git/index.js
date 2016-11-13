@@ -21,7 +21,7 @@ export default class Git {
     this.authorsData = {}
     this.lineCount = {}
     this._maxCommitsWalkCount = 100
-    this.storageKey = 'test7'
+    this.storageKey = 'test90'
     this.repoData = new RepoData()
   }
 
@@ -51,20 +51,6 @@ export default class Git {
 
   isGitRepo (path) {
     return NodeGit.Repository.open(path)
-  }
-
-  _saveStorageData () {
-    function toStorageData(authorData) {
-      return authorData.toStorage()
-    }
-
-    const storageData = {
-      "authorsData": _.map(this.authorsData, toStorageData),
-      "lineCount": this.lineCount
-    }
-    storage.set(this.storageKey, storageData, function(error) {
-      if (error) throw error
-    });
   }
 
   _walkThroughRepo (showData) {
@@ -145,31 +131,38 @@ export default class Git {
       })
   }
 
+  _saveStorageData () {
+    const storageData = {
+      "authorsData": this.authorsData,
+      "lineCount": this.lineCount,
+      "repoData": this.repoData
+    }
+    storage.set(this.storageKey, storageData, function(error) {
+      if (error) throw error
+    });
+  }
+
+  _restoreStorageData (showData) {
+    storage.get(this.storageKey, (error, data) => {
+      if (error) throw error
+      console.log("Read data from cache.")
+
+      this.authorsData = _.map(data.authorsData, (storageData) => {
+        return new AuthorData(storageData)
+      })
+      this.lineCount = data.lineCount
+      this.repoData = new RepoData(data.repoData)
+
+      showData()
+      console.log("Finish read data from cache.")
+    })
+  }
+
   collectData (showData) {
     storage.has(this.storageKey, (error, hasKey) => {
       if (error) throw error
-      if (false) {
-        storage.get(this.storageKey, (error, data) => {
-          if (error) throw error
-
-          console.log("Read data from cache.")
-
-          function fromStorageData(data) {
-            const authorData = new AuthorData()
-            authorData.fromStorage(data)
-            return authorData
-          }
-
-          this.authorsData = _.map(data.authorsData, fromStorageData)
-          this.lineCount = data.lineCount
-
-          for (var key in this.authorsData) {
-            this.authorsData.push(this.authorsData[key])
-          }
-
-          showData()
-          console.log("Finish read data from cache.")
-        })
+      if (hasKey) {
+        this._restoreStorageData(showData)
       } else {
         console.log('Start walk through repo.')
         this._walkThroughRepo(showData)

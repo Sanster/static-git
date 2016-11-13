@@ -1,7 +1,12 @@
 export default class DateData {
-  constructor () {
-    this._data = {}
-    this.total = 0
+  constructor (data = null) {
+    if (data) {
+      this._data = data._data
+      this.total = data.total
+    } else {
+      this._data = {}
+      this.total = 0
+    }
   }
 
   increaseByDate (date, num = 1) {
