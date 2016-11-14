@@ -1,6 +1,10 @@
 <template>
-  <div>
-    <canvas id='code-lines' width='500' height='350'></canvas>
+  <div class='code-lines'>
+    <div class='canvas-container card'>
+      <div class='canvas-container-content'>
+        <canvas id='code-lines-canvas'></canvas>
+      </div>
+    </div
   </div>
 </template>
 
@@ -17,21 +21,28 @@ export default {
     }
   },
   computed: {
-    lineCount () {
-      return this.options.lineCount
+    repoData () {
+      return this.options.repoData
+    },
+    codeLines () {
+      return this.repoData.codeLines
     }
   },
   methods: {
     lineChartData () {
-      let sum = 0
-      return _.transform(this.lineCount[this.selectedYear], (result, n) => {
-        sum += n
-        return result.push(sum)
+      let lines = this.codeLines.totalBeforeDate(new Date(this.selectedYear, 0))
+      let res =  this.codeLines.countByMonth()[this.selectedYear]
+
+      res = _.transform(res, (result, n) => {
+        lines += n
+        return result.push(lines)
       }, [])
+
+      return res
     }
   },
   mounted () {
-    var ctx = document.getElementById('code-lines')
+    var ctx = document.getElementById('code-lines-canvas')
     new Chart(ctx, {
       type: 'line',
       data: {
@@ -39,15 +50,14 @@ export default {
         datasets: [{
           label: 'Lines',
           data: this.lineChartData(),
-          backgroundColor: 'rgba(75, 192, 192, 0.8)'
-          // borderColor: 'rgba(75, 192, 192, 0.2)',
+          backgroundColor: 'rgba(255, 149, 40, 0.7)',
+          borderColor: '#ff9528',
         }]
       },
       options: {
-        responsive: false,
+        maintainAspectRatio: false,
         title: {
-          display: true,
-          text: 'Month commits'
+          display: false
         },
         legend: {
           display: false
@@ -55,7 +65,12 @@ export default {
         scales: {
           gridLines: {
             display: false
-          }
+          },
+          yAxes: [{
+            ticks: {
+              stepSize: 1000
+            }
+          }]
         }
       }
     })
@@ -65,7 +80,7 @@ export default {
 </script>
 
 <style lang="sass">
-#code-lines {
-    clear: both;
+.code-lines {
+  width: 100%;
 }
 </style>

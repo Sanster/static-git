@@ -94,7 +94,27 @@ export default class DateData {
 
   totalBeforeDate (endDate) {
     const [endYear, endMonth, endDay] = this._getDate(endDate)
+    let count = 0
 
+    _.forEach(this._data, (value, year) => {
+      if (year > endYear) {
+        return
+      } else if (year == endYear) {
+        for(let month=0; month<=endMonth; ++month) {
+          if (month === endMonth) {
+            for (let day=0; day<endDay; ++day) {
+              count += this.dayCount(year, month, day)
+            }
+          } else {
+            count += this.monthCount(year, month)
+          }
+        }
+      } else if (year < endYear) {
+        count += this.yearCount(year)
+      }
+    })
+
+    return count
   }
 
 // return Array(12): [1,2,3,4,....,12]
@@ -114,7 +134,7 @@ export default class DateData {
   _getInitData () {
     let monthCount = []
     _.times(12, () => {
-      monthCount.push(new Array(31).fill(0))
+      monthCount.push(new Array(32).fill(0))
     })
     return monthCount
   }

@@ -19,9 +19,8 @@ export default class Git {
   init (app) {
     this.app = app
     this.authorsData = {}
-    this.lineCount = {}
-    this._maxCommitsWalkCount = 100
-    this.storageKey = 'test90'
+    this._maxCommitsWalkCount = 36446
+    this.storageKey = 'allc'
     this.repoData = new RepoData()
   }
 
@@ -34,20 +33,6 @@ export default class Git {
     }
     return this.authorsData[authorName]
   }
-
-  // _calLineCount (stats, commitDate) {
-  //   const year = commitDate.getFullYear()
-  //   const month = commitDate.getMonth()
-  //   const day = commitDate.getDate()
-
-  //   if (!this.lineCount.hasOwnProperty(year)) {
-  //     this.lineCount[year] = this._getInitLineCount()
-  //   }
-
-  //   const changeLines = stats.total_additions - stats.total_deletions
-
-  //   this.lineCount[year][month] += changeLines
-  // }
 
   isGitRepo (path) {
     return NodeGit.Repository.open(path)
@@ -91,9 +76,9 @@ export default class Git {
                   .then((arrayPatch) => {
                     arrayPatch.forEach((patch) => {
                       const stats = patch.lineStats()
-                      // this._calLineCount(stats, commitDate)
                       let add = stats.total_additions
                       let del = stats.total_deletions
+                      this.repoData.saveCodeLine(commitDate, add, del)
                       this.repoData.additions.increaseByDate(commitDate, add)
                       this.repoData.deletions.increaseByDate(commitDate, del)
                       authorData.additions.increaseByDate(commitDate, add)
@@ -134,7 +119,6 @@ export default class Git {
   _saveStorageData () {
     const storageData = {
       "authorsData": this.authorsData,
-      "lineCount": this.lineCount,
       "repoData": this.repoData
     }
     storage.set(this.storageKey, storageData, function(error) {
@@ -150,7 +134,6 @@ export default class Git {
       this.authorsData = _.map(data.authorsData, (storageData) => {
         return new AuthorData(storageData)
       })
-      this.lineCount = data.lineCount
       this.repoData = new RepoData(data.repoData)
 
       showData()
@@ -173,6 +156,7 @@ export default class Git {
 // remove 0 commits author during date
   authorsDataDuringDate (startDate, endDate) {
     const res = {}
+
     _.forEach(this.authorsData, (item, name) => {
       if (item.commitsCount.totalDuringDate(startDate, endDate) !== 0) {
         res[name] = item

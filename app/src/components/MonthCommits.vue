@@ -1,7 +1,7 @@
 <template>
   <div class='month-commits'>
-    <div class='container card'>
-      <div class='month-commits-canvas-container'>
+    <div class='canvas-container card'>
+      <div class='canvas-container-content'>
         <canvas id='month-commits-canvas'></canvas>
       </div>
     </div>
@@ -12,7 +12,6 @@
 <script>
 import Chart from 'chart.js'
 import AuthorList from 'components/AuthorList.vue'
-import DateData from 'utils/DateData.js'
 
 export default {
   props: [
@@ -92,16 +91,14 @@ export default {
         datasets: [{
           label: 'Commits',
           data: this.$git.repoData.commitsCount.countByMonth()[this.selectedYear],
-          backgroundColor: 'rgba(75, 192, 192, 0.8)'
-          // borderColor: 'rgba(75, 192, 192, 0.2)',
+          backgroundColor: 'rgba(255, 149, 40, 0.79)'
         }]
       },
       options: {
         maintainAspectRatio: false,
         onClick: this.barClick,
         title: {
-          display: true,
-          text: 'Month commits'
+          display: false
         },
         legend: {
           display: false
@@ -121,16 +118,5 @@ export default {
 <style lang="sass">
 .month-commits {
   width: 100%;
-
-  .container {
-    width: 100%;
-    background: white;
-  }
-
-  .month-commits-canvas-container {
-    height: 350px;
-    width: 90%;
-    margin: auto;
-  }
 }
 </style>

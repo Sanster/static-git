@@ -31,4 +31,8 @@ export default class RepoData {
 
     this.commitsCount.increaseByDate(commitDate)
   }
+
+  saveCodeLine (commitDate, additions, deletions) {
+    this.codeLines.increaseByDate(commitDate, (additions - deletions))
+  }
 }

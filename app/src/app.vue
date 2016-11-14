@@ -110,7 +110,7 @@ export default {
         }
       } else if (this.statsIndex === 2) {
         return {
-          lineCount: this.$git.lineCount
+          repoData: this.$git.repoData
         }
       }
     }
