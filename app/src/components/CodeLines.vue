@@ -68,7 +68,7 @@ export default {
           },
           yAxes: [{
             ticks: {
-              stepSize: 1000
+              stepSize: 50000
             }
           }]
         }

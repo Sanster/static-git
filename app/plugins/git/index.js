@@ -19,7 +19,7 @@ export default class Git {
   init (app) {
     this.app = app
     this.authorsData = {}
-    this._maxCommitsWalkCount = 36446
+    this._maxCommitsWalkCount = 25639
     this.storageKey = 'allc'
     this.repoData = new RepoData()
   }
@@ -55,10 +55,6 @@ export default class Git {
           }
 
           count += 1
-          if (count > this._maxCommitsWalkCount) {
-            history.removeAllListeners('commit')
-            return
-          }
 
           const commitDate = commit.date()
           const author = commit.author()
@@ -74,6 +70,10 @@ export default class Git {
               arrayDiff.forEach((diff, index) => {
                 diff.patches()
                   .then((arrayPatch) => {
+                    if (asyncCounted === false){
+                      asyncCounted = true
+                      asyncCount += 1
+                    }
                     arrayPatch.forEach((patch) => {
                       const stats = patch.lineStats()
                       let add = stats.total_additions
@@ -86,23 +86,20 @@ export default class Git {
                     })
                   })
                   .then(()=>{
-                    if (asyncCounted === false) {
-                      asyncCounted = true
-                      asyncCount += 1
-                    }
-                    if (index === size - 1 && asyncCount > _maxCommitsWalkCount) {
-                      history.emit('end')
+                    if (asyncCount > this._maxCommitsWalkCount) {
+                      console.log('History walk end, write data to json.')
+                      this._saveStorageData()
+                      showData()
                     }
                   })
+                  .catch((reason) => {
+                    console.log(reason)
+                  })
+              })
+              .catch((reason) => {
+                console.log(reason)
               })
             })
-        })
-
-        history.on('end', () => {
-          console.log('History walk end, write data to json.')
-
-          showData()
-          this._saveStorageData()
         })
 
         history.on('error', (error) => {
