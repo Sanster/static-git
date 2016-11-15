@@ -51,7 +51,8 @@ export default {
       initSortKey: 'commits',
       sortKey: '',
       emptyRow: 0,
-      downSort: true
+      downSort: true,
+      sortedData: {}
     }
   },
   beforeMount () {
@@ -79,7 +80,7 @@ export default {
       this.currentPage = page
     },
     pageData () {
-      const sliceData = this.data.slice(this.currentPage * this.perPage,
+      const sliceData = this.sortedData.slice(this.currentPage * this.perPage,
                                         (this.currentPage + 1) * this.perPage)
 
       this.emptyRow = this.perPage - sliceData.length
@@ -91,11 +92,6 @@ export default {
       return function (authorData1, authorData2) {
         let compareVal1 = authorData1[key]
         let compareVal2 = authorData2[key]
-
-        if (Array.isArray(authorData1[key])) {
-          compareVal1 = authorData1[key].length
-          compareVal2 = authorData2[key].length
-        }
 
         if (compareVal1 > compareVal2) {
           return downSort ? -1 : 1
@@ -114,7 +110,7 @@ export default {
         this.sortKey = key
       }
 
-      this.data.sort(this.compareKey(key))
+      this.sortedData = this.data.slice().sort(this.compareKey(key))
     }
   }
 }
