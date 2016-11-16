@@ -36,7 +36,6 @@ a {
 
 .canvas-container {
   width: 100%;
-  background: white;
   padding-top: 35px;
   padding-bottom: 35px;
 }
@@ -48,5 +47,14 @@ a {
 }
 
 .card {
+  background: white;
+  margin-bottom: 20px;
   box-shadow: 1px 1px 4px 1px #d2cfcf;
+}
+
+.card-title {
+  margin: 0px;
+  position: relative;
+  left: 30px;
+  padding-top: 20px;
 }

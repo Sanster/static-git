@@ -1,8 +1,11 @@
 <template>
-  <div class='month-commits'>
-    <div class='canvas-container card'>
-      <div class='canvas-container-content'>
-        <canvas id='month-commits-canvas'></canvas>
+  <div>
+    <div class='month-commits card'>
+      <h3 class='card-title'>Month Commits</h3>
+      <div class='canvas-container'>
+        <div class='canvas-container-content'>
+          <canvas id='month-commits-canvas'></canvas>
+        </div>
       </div>
     </div>
     <author-list :options="authorListOptions"></author-list>
@@ -79,7 +82,7 @@ export default {
       if (data.length !== 0) {
         this.selectedMonth = data[0]._index
       }
-    },
+    }
   },
   mounted () {
     var ctx = document.getElementById('month-commits-canvas')

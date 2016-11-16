@@ -1,5 +1,6 @@
 <template>
   <div class="author-list card">
+    <h3 class='card-title'>Contributors</h3>
     <table class="author-list-table">
       <thead>
         <tr>
@@ -63,7 +64,7 @@ export default {
       return Math.ceil(this.data.length / this.perPage)
     },
     headClass () {
-      return this.downSort ? 'down' : 'up'
+      return this.downSort ? 'up' : 'down'
     },
     fields () {
       return this.options.fields
@@ -103,14 +104,22 @@ export default {
       }
     },
     sortByKey (key) {
-      if (this.sortKey === key) {
-        this.downSort = !this.downSort
-      } else {
+     if (this.sortKey !== key) {
         this.downSort = true
         this.sortKey = key
       }
 
       this.sortedData = this.data.slice().sort(this.compareKey(key))
+
+      if (this.sortKey === key) {
+        this.downSort = !this.downSort
+      }
+    }
+  },
+  watch: {
+    data: function() {
+      this.downSort = true
+      this.sortByKey(this.initSortKey)
     }
   }
 }
@@ -120,9 +129,7 @@ export default {
 @import '../stylesheet/vars.scss';
 
 .author-list {
-  padding-top: 30px;
   padding-bottom: 20px;
-  margin-top: 20px;
   background: white;
 }
 
@@ -134,6 +141,7 @@ export default {
   position: relative;
   z-index: 1;
   border-collapse: collapse;
+  margin-top: 15px;
 
   tbody {
     tr:hover {
