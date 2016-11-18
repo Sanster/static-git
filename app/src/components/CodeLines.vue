@@ -1,6 +1,8 @@
 <template>
   <div class='code-lines card'>
-    <h3 class='card-title'>Code Lines</h3>
+    <div class="card-header">
+      <h3 class='card-title'>Code Lines</h3>
+    </div>
     <div class='canvas-container'>
       <div class='canvas-container-content'>
         <canvas id='code-lines-canvas'></canvas>

@@ -1,6 +1,11 @@
 <template>
   <div class="author-list card">
-    <h3 class='card-title'>Contributors</h3>
+    <div class="card-header">
+      <h3 class='card-title'>Contributors</h3>
+      <input type="text" class="author-search-input input-control"
+        placeholder="Search"
+        v-model="searchWord">
+    </div>
     <table class="author-list-table">
       <thead>
         <tr>
@@ -17,7 +22,7 @@
         </tr>
       </thead>
       <tbody v-cloak>
-        <tr v-for="data in pageData()">
+        <tr v-for="data in pageData">
           <td v-for="field in fields">
             <div :class="field.key + '__col'">
               {{data[field.key]}}
@@ -38,6 +43,9 @@
 
 <script>
 import Pagination from './Pagination.vue'
+import Fuse from 'fuse.js'
+
+let fuse
 
 export default {
   props: [
@@ -53,18 +61,21 @@ export default {
       sortKey: '',
       emptyRow: 0,
       downSort: true,
-      sortedData: {}
+      sortedData: {},
+      searchWord: "",
+      sortByFuzzySearch: false
     }
   },
   beforeMount () {
     this.sortByKey(this.initSortKey)
+    fuse = new Fuse(this.data, { keys: ["name"] });
   },
   computed: {
     totalPage () {
       return Math.ceil(this.data.length / this.perPage)
     },
     headClass () {
-      return this.downSort ? 'up' : 'down'
+      return this.downSort ? 'down' : 'up'
     },
     fields () {
       return this.options.fields
@@ -74,18 +85,29 @@ export default {
     },
     perPage () {
       return this.options.perPage
-    }
-  },
-  methods: {
-    pageChange (page) {
-      this.currentPage = page
     },
     pageData () {
-      const sliceData = this.sortedData.slice(this.currentPage * this.perPage,
+      let filteredData
+
+      if (this.searchWord) {
+        filteredData = fuse.search(this.searchWord)
+        if (!this.sortByFuzzySearch)  {
+          filteredData = this.sortData(filteredData)
+        }
+      } else {
+        filteredData = this.sortData(this.data)
+      }
+
+      const sliceData = filteredData.slice(this.currentPage * this.perPage,
                                         (this.currentPage + 1) * this.perPage)
 
       this.emptyRow = this.perPage - sliceData.length
       return sliceData
+    },
+  },
+  methods: {
+    pageChange (page) {
+      this.currentPage = page
     },
     compareKey (key) {
       const downSort = this.downSort
@@ -104,22 +126,27 @@ export default {
       }
     },
     sortByKey (key) {
-     if (this.sortKey !== key) {
+      this.sortByFuzzySearch = false
+
+      if (this.sortKey !== key) {
         this.downSort = true
         this.sortKey = key
-      }
-
-      this.sortedData = this.data.slice().sort(this.compareKey(key))
-
-      if (this.sortKey === key) {
+      } else {
         this.downSort = !this.downSort
       }
+    },
+    sortData (dataToSort) {
+      return dataToSort.slice().sort(this.compareKey(this.sortKey))
     }
   },
   watch: {
     data: function() {
       this.downSort = true
+      this.sortKey = ""
       this.sortByKey(this.initSortKey)
+    },
+    searchWord: function () {
+      this.sortByFuzzySearch = true
     }
   }
 }
@@ -141,7 +168,6 @@ export default {
   position: relative;
   z-index: 1;
   border-collapse: collapse;
-  margin-top: 15px;
 
   tbody {
     tr:hover {
@@ -183,5 +209,12 @@ export default {
     white-space: nowrap;
     width: 170px;
   }
+}
+
+.author-search-input {
+  float: right;
+  height: 25px;
+  width: 150px;
+  margin-right: 50px;
 }
 </style>

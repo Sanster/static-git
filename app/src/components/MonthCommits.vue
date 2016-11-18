@@ -1,7 +1,9 @@
 <template>
   <div>
     <div class='month-commits card'>
-      <h3 class='card-title'>Month Commits</h3>
+      <div class="card-header">
+        <h3 class='card-title'>Month Commits</h3>
+      </div>
       <div class='canvas-container'>
         <div class='canvas-container-content'>
           <canvas id='month-commits-canvas'></canvas>
