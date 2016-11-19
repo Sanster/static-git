@@ -35,14 +35,16 @@
         </tr>
       </tbody>
     </table>
-    <pagination :total="totalPage"
-                v-show="totalPage > 1"
-                v-on:currentChange="pageChange"></pagination>
+    <el-pagination
+      class="pagination"
+      layout="prev, pager, next"
+      :page-count="totalPage"
+      v-on:current-change="pageChange">
+    </el-pagination>
   </div>
 </template>
 
 <script>
-import Pagination from './Pagination.vue'
 import Fuse from 'fuse.js'
 
 let fuse
@@ -51,9 +53,6 @@ export default {
   props: [
     'options'
   ],
-  components: {
-    'pagination': Pagination
-  },
   data () {
     return {
       currentPage: 0,
@@ -72,7 +71,7 @@ export default {
   },
   computed: {
     totalPage () {
-      return Math.ceil(this.data.length / this.perPage)
+      return Math.ceil(this.data.length / this.perPage) - 1
     },
     headClass () {
       return this.downSort ? 'down' : 'up'
@@ -107,7 +106,7 @@ export default {
   },
   methods: {
     pageChange (page) {
-      this.currentPage = page
+      this.currentPage = page - 1
     },
     compareKey (key) {
       const downSort = this.downSort
@@ -216,5 +215,9 @@ export default {
   height: 25px;
   width: 150px;
   margin-right: 50px;
+}
+
+.pagination {
+
 }
 </style>
