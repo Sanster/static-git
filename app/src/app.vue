@@ -79,6 +79,7 @@ export default {
       return _.map(this.$git.authorsData, (item) => {
         return {
           name: item.name,
+          email: item.email,
           commits: item.commitsCount.total,
           additions: item.additions.total,
           deletions: item.deletions.total,

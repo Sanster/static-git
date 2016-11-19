@@ -73,6 +73,7 @@ export default {
       return _.map(this.$git.authorsDataDuringDate(startDate, endDate), (item) => {
         return {
           name: item.name,
+          email: item.email,
           commits: item.commitsCount.totalDuringDate(startDate, endDate),
           additions: item.additions.totalDuringDate(startDate, endDate),
           deletions: item.deletions.totalDuringDate(startDate, endDate),

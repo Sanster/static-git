@@ -32,6 +32,9 @@
           <td>{{currentPage * perPage + index + 1}}</td>
           <td v-for="field in fields">
             <div :class="field.key + '__col'">
+              <template v-if="field.key === 'name'">
+                <img :src="getGravatarUrl(data['email'])" class="author-avatar"/>
+              </template>
               {{data[field.key]}}
             </div>
           </td>
@@ -53,6 +56,7 @@
 <script>
 import Pagination from './Pagination.vue'
 import Fuse from 'fuse.js'
+import gravatar from 'gravatar'
 
 let fuse
 
@@ -146,6 +150,9 @@ export default {
     },
     sortData (dataToSort) {
       return dataToSort.slice().sort(this.compareKey(this.sortKey))
+    },
+    getGravatarUrl (email) {
+      return gravatar.url(email, {protocol: 'http', default: 'mm'})
     }
   },
   watch: {
@@ -169,11 +176,17 @@ export default {
   background: white;
 }
 
+.author-avatar {
+  height: 30px;
+  width: 30px;
+  border-radius: 15px;
+  margin-right: 10px;
+}
+
 .author-list-table {
   font-size: 15px;
   width: 90%;
   margin: auto;
-  table-layout: fixed;
   position: relative;
   z-index: 1;
   border-collapse: collapse;
@@ -214,13 +227,16 @@ export default {
   td {
     height: 22px;
     cursor: pointer;
+    vertical-align: center;
   }
 
   .name__col {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 170px;
+    display: flex;
+    align-items: center;
+    text-align: left;
   }
 }
 

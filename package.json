@@ -45,6 +45,7 @@
     "electron-json-storage": "^2.0.3",
     "font-awesome": "^4.7.0",
     "fuse.js": "^2.5.0",
+    "gravatar": "^1.6.0",
     "lodash": "^4.16.4",
     "moment": "^2.15.1",
     "nodegit": "^0.16.0",
