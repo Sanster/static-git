@@ -1,7 +1,12 @@
 <template>
   <div class="author-list card">
     <div class="card-header">
-      <h3 class='card-title'>Contributors</h3>
+      <div class="card-title">
+        <div class="author-list-title">
+          <span>{{totalAuthors}}</span>
+          <h3>Contributors</h3>
+        </div>
+      </div>
       <input type="text" class="author-search-input input-control"
         placeholder="Search"
         v-model="searchWord">
@@ -13,7 +18,7 @@
               @click.prevent="sortByKey(field.key)"
               :class="field.key + '__col'">
             <div class="field__header"
-                :class="headClass">
+                :class="downSort ? 'down' : 'up'">
               <a href="#">{{field.label}}</a>
               <i class="fa fa-caret-down sort-icon"
                 v-show="field.key == sortKey"></i>
@@ -76,8 +81,8 @@ export default {
     totalPage () {
       return Math.ceil(this.data.length / this.perPage)
     },
-    headClass () {
-      return this.downSort ? 'down' : 'up'
+    totalAuthors () {
+      return this.data.length
     },
     fields () {
       return this.options.fields
@@ -210,6 +215,12 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 170px;
+  }
+}
+
+.author-list-title {
+  & > h3 {
+    display: inline;
   }
 }
 
