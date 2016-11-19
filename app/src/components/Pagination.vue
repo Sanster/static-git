@@ -9,7 +9,8 @@
          class="page-input"
          v-model="inputPage">
   <span class="slash">/</span>
-  <span class="total-page">{{this.total}}</span>
+  <span class="total-page"
+        @click="toLastPage">{{this.total}}</span>
   <button class="btn-next"
         :class="{disabled: this.isLastPage()}"
         @click="next">
@@ -61,6 +62,9 @@ export default {
         this.inputPage = this.currentPage + 1
         this.$emit('currentChange', this.currentPage)
       }
+    },
+    toLastPage () {
+      this.inputPage = this.total
     }
   }
 }
@@ -91,13 +95,14 @@ $pagination-height: 20px;
   }
 
   .slash {
-    margin-left: 6px;
-    margin-right: 6px;
+    margin-left: 7px;
+    margin-right: 7px;
     font-size: 19px;
   }
 
   .total-page {
-    font-size: 18px
+    font-size: 18px;
+    cursor: pointer;
   }
 
   .btn-next, .btn-prev {

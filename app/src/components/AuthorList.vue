@@ -14,6 +14,7 @@
     <table class="author-list-table">
       <thead>
         <tr>
+          <th class="author-rank">#</th>
           <th v-for="field in fields"
               @click.prevent="sortByKey(field.key)"
               :class="field.key + '__col'">
@@ -27,7 +28,8 @@
         </tr>
       </thead>
       <tbody v-cloak>
-        <tr v-for="data in pageData">
+        <tr v-for="(data, index) in pageData">
+          <td>{{currentPage * perPage + index + 1}}</td>
           <td v-for="field in fields">
             <div :class="field.key + '__col'">
               {{data[field.key]}}
@@ -180,6 +182,10 @@ export default {
     tr:hover {
       background-color: #f5f5f5;
     }
+  }
+
+  .author-rank {
+    width: 20px;
   }
 
   th {
