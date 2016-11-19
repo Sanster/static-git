@@ -1,26 +1,18 @@
 <template>
-<div class="pagination" :style="{ width: page * 30 + 'px' }">
+<div class="pagination" v-show="total > 1">
   <button class="btn-prev"
-          :class="{disabled: this.currentPage === 0}"
-          @click="prev">
+        :class="{disabled: this.isFirstPage()}"
+        @click="prev">
     <i class="fa fa-chevron-left"></i>
   </button>
-  <ul>
-    <!--<li>
-      <span class="gap">...</span>
-    </li>-->
-    <li v-for="(n, index) in page"
-        @click="loadPage(index)"
-        :class="{ 'active': isActive(index) }">
-        <a href="#">{{n + pageOffSet}}</a>
-    </li>
-    <!--<li>
-      <span class="gap">...</span>
-    </li>-->
-  </ul>
+  <input type="text"
+         class="page-input"
+         v-model="inputPage">
+  <span class="slash">/</span>
+  <span class="total-page">{{this.total}}</span>
   <button class="btn-next"
-          :class="{disabled: this.currentPage === this.total - 1}"
-          @click="next">
+        :class="{disabled: this.isLastPage()}"
+        @click="next">
     <i class="fa fa-chevron-right"></i>
   </button>
 </div>
@@ -35,48 +27,39 @@ export default {
   data () {
     return {
       currentPage: 0,
-      maxPage: 5,
-      pageOffSet: 0
+      inputPage: 1
     }
   },
-  computed: {
-    page () {
-       return this.total > this.maxPage ? this.maxPage : this.total
+  watch: {
+    inputPage: function (newInputPage) {
+      if (newInputPage > this.total) {
+        newInputPage = this.total
+      } else if (newInputPage <= 0) {
+        newInputPage = 1
+      }
+      this.currentPage = newInputPage - 1
+      this.$emit('currentChange', this.currentPage)
     }
   },
   methods: {
-    loadPage (page) {
-      if (page === this.currentPage) {
-        return
-      }
-      this.currentPage = page + this.pageOffSet
-      this.$emit('currentChange', this.currentPage)
+    isFirstPage () {
+      return this.currentPage === 0
     },
-    isActive (page) {
-      return this.currentPage ===  page + this.pageOffSet
+    isLastPage () {
+      return this.currentPage === this.total - 1
     },
     prev () {
-      if (this.currentPage > 0) {
+      if (!this.isFirstPage()) {
         this.currentPage -= 1
-        this.checkOverLeft()
+        this.inputPage = this.currentPage + 1
         this.$emit('currentChange', this.currentPage)
       }
     },
     next () {
       if (this.currentPage < this.total - 1) {
         this.currentPage += 1
-        this.checkOverRight()
+        this.inputPage = this.currentPage + 1
         this.$emit('currentChange', this.currentPage)
-      }
-    },
-    checkOverRight () {
-      if (this.currentPage >= this.page) {
-        this.pageOffSet += 1
-      }
-    },
-    checkOverLeft () {
-      if (this.currentPage < this.pageOffSet && this.pageOffSet > 0) {
-        this.pageOffSet -= 1
       }
     }
   }
@@ -86,67 +69,39 @@ export default {
 <style lang="sass">
 @import '../stylesheet/vars.scss';
 
-$pagination-height: 36px;
-$page-li-padding: 3px;
-$page-li-height: 20px;
-$border-width: 1px;
-$page-ul-top: ($pagination-height - $page-li-height - $page-li-padding * 2 - $border-width * 2) / 2;
+$pagination-height: 20px;
 
 .pagination {
-  margin: auto;
-  position: relative;
-  padding-left: 25px;
-  padding-right: 25px;
-  margin-top: 10px;
-  height: $pagination-height;
+  display: flex;
+  justify-content: center;
 
-  ul {
-    display: inline-block;
-    list-style-type: none;
-    padding-left: 0px;
-    margin: 0px;
-    position: relative;
-    top: $page-ul-top;
+  .page-input {
+    width: 23px;
+    height: $pagination-height;
+    padding: 0;
+    text-align: center;
+    border-radius: 2px;
+    border: 1px solid $gray;
+    font-size: 15px;
+    font-family: inherit;
 
-    .gap {
-      cursor: default;
-    }
-
-    li {
-      float:left;
-      padding: $page-li-padding;
-      cursor: pointer;
-      width: $page-li-height;
-      text-align: center;
-      font-size: 17px;
-
-      &.active {
-        cursor: default;
-        border: solid $border-width $light-black;
-
-        a {
-          cursor: default;
-        }
-      }
-    }
-
-    li a {
-      color: black;
+    &:focus {
+      outline: 0px;
     }
   }
 
-  & > td {
-    width: 100%;
+  .slash {
+    margin-left: 6px;
+    margin-right: 6px;
+    font-size: 19px;
   }
 
-  a {
-    text-decoration: none;
+  .total-page {
+    font-size: 18px
   }
 
   .btn-next, .btn-prev {
-    position: absolute;
-    height: 100%;
-    top: 0;
+    height: $pagination-height;
     border: 0px;
     background: transparent;
     font-size: 15px;
@@ -165,14 +120,6 @@ $page-ul-top: ($pagination-height - $page-li-height - $page-li-padding * 2 - $bo
       cursor: not-allowed;
       color: $gray;
     }
-  }
-
-  .btn-next {
-    right: 0;
-  }
-
-  .btn-prev {
-    left: 0;
   }
 }
 </style>

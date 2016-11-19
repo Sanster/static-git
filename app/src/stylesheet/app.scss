@@ -64,8 +64,14 @@ a {
   padding-bottom: 25px;
 }
 
+.card-footer {
+  position: relative;
+  margin-top: 15px;
+}
+
 .input-control {
   border: 1px solid #ccc;
+  border-radius: 2px;
 }
 
 .input-control:focus {

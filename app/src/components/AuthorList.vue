@@ -35,9 +35,11 @@
         </tr>
       </tbody>
     </table>
-    <pagination :total="totalPage"
-                v-show="totalPage > 1"
-                v-on:currentChange="pageChange"></pagination>
+    <div class="card-footer">
+      <pagination :total="totalPage"
+                  v-on:currentChange="pageChange"></pagination>
+    </div>
+
   </div>
 </template>
 
