@@ -10,7 +10,8 @@
          v-model="inputPage">
   <span class="slash">/</span>
   <span class="total-page"
-        @click="toLastPage">{{this.total}}</span>
+        @click="toLastPage"
+        v-on:dblclick="toFirstPage">{{this.total}}</span>
   <button class="btn-next"
         :class="{disabled: this.isLastPage()}"
         @click="next">
@@ -65,6 +66,9 @@ export default {
     },
     toLastPage () {
       this.inputPage = this.total
+    },
+    toFirstPage () {
+      this.inputPage = 1
     }
   }
 }
