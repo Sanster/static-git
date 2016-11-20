@@ -26,6 +26,7 @@ import AuthorList from 'components/AuthorList.vue'
 import MonthCommits from 'components/MonthCommits.vue'
 import CodeLines from 'components/CodeLines.vue'
 import SideBar from 'layout/SideBar.vue'
+import RepoStats from 'components/RepoStats.vue'
 import moment from 'moment'
 
 export default {
@@ -69,7 +70,8 @@ export default {
     'author-list': AuthorList,
     'month-commits': MonthCommits,
     'code-lines': CodeLines,
-    'sidebar': SideBar
+    'sidebar': SideBar,
+    'repo-stats': RepoStats
   },
   created () {
     this.$git.collectData(this.showData)
@@ -96,6 +98,8 @@ export default {
         return 'month-commits'
       } else if (this.statsIndex === 2) {
         return 'code-lines'
+      } else if (this.statsIndex === 3) {
+        return 'repo-stats'
       }
     },
     options () {

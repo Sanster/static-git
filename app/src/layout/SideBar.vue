@@ -13,6 +13,9 @@
       <li class="stats-item" :class="{ 'active': isActive(2) }" @click="itemClick(2)">
         <a class="stats-item-name"><i class="fa fa-fw fa-align-justify"></i><span>Code Lines</span></a>
       </li>
+      <li class="stats-item" :class="{ 'active': isActive(3) }" @click="itemClick(3)">
+        <a class="stats-item-name"><i class="fa fa-fw fa-align-justify"></i><span>repo-stats</span></a>
+      </li>
     </ul>
   </div>
 </template>
