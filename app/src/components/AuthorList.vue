@@ -33,7 +33,9 @@
           <td v-for="field in fields">
             <div :class="field.key + '__col'">
               <template v-if="field.key === 'name'">
-                <img :src="getGravatarUrl(data['email'])" class="author-avatar"/>
+                <img :src="getGravatarUrl(data['email'])"
+                     :title="data['email']"
+                     class="author-avatar"/>
               </template>
               {{data[field.key]}}
             </div>
