@@ -20,6 +20,7 @@ export default class Git {
     this.app = app
     this.authorsData = {}
     this._maxCommitsWalkCount = 25639
+    // cached 'allc'
     this.storageKey = 'allc'
     this.repoData = new RepoData()
   }

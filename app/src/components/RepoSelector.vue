@@ -6,19 +6,21 @@
      class="selector-dropdown__input"
      @click="toggleDropdown"
      :onfocusout="hideOptions">
-    <span>Add a repository</span>
+    <span v-if="selectedRepo.name == ''">Add a repository</span>
+    <span v-else>{{ this.selectedRepo.name }}</span>
     <i class="fa fa-caret-right"></i>
   </a>
   <ul class="selector-dropdown__list"
       v-show="optionsVisible">
     <li class="selector-dropdown__item"
         v-for="option in options">
-      <a href="#">{{option}}</a>
+      <a href="#"
+         @click="selectRepo(option)">{{option.name}}</a>
     </li>
     <li id="add-repo"
         @click="addRepoClicked">
       <i class="fa fa-folder-open-o"></i>
-      Add repository
+      Add
     </li>
   </ul>
 </div>
@@ -32,13 +34,20 @@ import VueClickaway from 'vue-clickaway'
 export default {
   data () {
     return {
-      optionsVisible: false,
-      options: ['gitlab','vuejs','static-git']
+      optionsVisible: false
     }
   },
   mixins: [VueClickaway.mixin],
   mounted () {
     ipc.on('selected-directory', this.addRepo)
+  },
+  computed: {
+    options () {
+      return this.$store.state.repositories
+    },
+    selectedRepo () {
+      return this.$store.state.selectedRepo
+    }
   },
   methods: {
     toggleDropdown () {
@@ -48,17 +57,22 @@ export default {
       ipc.send('open-file-dialog')
     },
     addRepo (event, path) {
-      const name = _(path[0].split('/')).last()
-      this.$git.isGitRepo(path[0])
+      const repoPath = path[0]
+      this.$git.isGitRepo(repoPath)
         .then((repo) => {
-          console.log(name)
+          this.$store.commit('addRepository', repoPath)
+          this.hideOptions()
         })
         .catch((error) => {
-          ipc.send('open-info-dialog', "This is not a Git Repository.")
+          ipc.send('open-info-dialog', `This is not a Git Repository. ${error}`)
         })
     },
     hideOptions () {
       this.optionsVisible = false
+    },
+    selectRepo (repo) {
+      this.$store.commit('setSelectedRepo', repo)
+      this.hideOptions()
     }
   }
 }
@@ -121,7 +135,6 @@ export default {
     border-top: 1px solid;
     font-size: 13px;
     color: $gray;
-    font-style: italic;
   }
 }
 
