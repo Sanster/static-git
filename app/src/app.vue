@@ -5,6 +5,7 @@
 
     <sidebar v-on:sideBarClick="sideBarClicked"></sidebar>
 
+    <load-view></load-view>
     <transition name="fade">
       <div class="content"
           v-if="dataCollectDone">
@@ -27,6 +28,7 @@ import MonthCommits from 'components/MonthCommits.vue'
 import CodeLines from 'components/CodeLines.vue'
 import SideBar from 'layout/SideBar.vue'
 import RepoStats from 'components/RepoStats.vue'
+import LoadView from 'components/LoadView.vue'
 import moment from 'moment'
 
 export default {
@@ -71,10 +73,11 @@ export default {
     'month-commits': MonthCommits,
     'code-lines': CodeLines,
     'sidebar': SideBar,
-    'repo-stats': RepoStats
+    'repo-stats': RepoStats,
+    'load-view': LoadView
   },
   created () {
-    this.$git.collectData(this.showData)
+    // this.$git.collectData(this.showData)
   },
   computed: {
     authorListData () {
