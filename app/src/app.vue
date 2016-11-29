@@ -3,9 +3,11 @@
     <div class="header">
     </div>
 
-    <sidebar v-on:sideBarClick="sideBarClicked"></sidebar>
+    <sidebar> </sidebar>
 
-    <load-view></load-view>
+    <load-view v-if="!dataCollectDone">
+    </load-view>
+
     <transition name="fade">
       <div class="content"
           v-if="dataCollectDone">
@@ -26,10 +28,11 @@
 import AuthorList from 'components/AuthorList.vue'
 import MonthCommits from 'components/MonthCommits.vue'
 import CodeLines from 'components/CodeLines.vue'
-import SideBar from 'layout/SideBar.vue'
+import Sidebar from 'layout/Sidebar.vue'
 import RepoStats from 'components/RepoStats.vue'
 import LoadView from 'components/LoadView.vue'
 import moment from 'moment'
+import { mapState } from 'vuex'
 
 export default {
   data () {
@@ -69,17 +72,22 @@ export default {
     }
   },
   components: {
+    'sidebar': Sidebar,
     'author-list': AuthorList,
     'month-commits': MonthCommits,
     'code-lines': CodeLines,
-    'sidebar': SideBar,
     'repo-stats': RepoStats,
     'load-view': LoadView
   },
   created () {
-    // this.$git.collectData(this.showData)
+    this.$store.commit('startDataCollect')
+    this.$git.collectData(this.showData)
   },
   computed: {
+    ...mapState ([
+      'currentView',
+      'dataCollectDone'
+    ]),
     authorListData () {
       return _.map(this.$git.authorsData, (item) => {
         return {
@@ -94,29 +102,18 @@ export default {
         }
       })
     },
-    currentView () {
-      if (this.statsIndex === 0) {
-        return 'author-list'
-      } else if (this.statsIndex === 1) {
-        return 'month-commits'
-      } else if (this.statsIndex === 2) {
-        return 'code-lines'
-      } else if (this.statsIndex === 3) {
-        return 'repo-stats'
-      }
-    },
     options () {
-      if (this.statsIndex === 0) {
+      if (this.currentView === 'author-list') {
         return {
           fields: this.authorListFields,
           data: this.authorListData,
           perPage: 12
         }
-      } else if (this.statsIndex === 1) {
+      } else if (this.currentView === 'month-commits') {
         return {
           authorsData: this.$git.authorsData
         }
-      } else if (this.statsIndex === 2) {
+      } else if (this.currentView === 'code-lines') {
         return {
           repoData: this.$git.repoData
         }
@@ -125,13 +122,7 @@ export default {
   },
   methods: {
     showData () {
-      this.dataCollectDone = true
-    },
-    sideBarClicked (index) {
-      this.statsIndex = index
-    },
-    showStats (index) {
-      return this.statsIndex === index
+      this.$store.commit('finishDataCollect')
     }
   }
 }

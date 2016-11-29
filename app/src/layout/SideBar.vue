@@ -4,17 +4,13 @@
       <repo-selector></repo-selector>
     </div>
     <ul class="stats-item-list">
-      <li class="stats-item" :class="{ 'active': isActive(0) }" @click="itemClick(0)">
-        <a class="stats-item-name"><i class="fa fa-fw fa-users"></i><span>Contributions</span> </a>
-      </li>
-      <li class="stats-item" :class="{ 'active': isActive(1) }" @click="itemClick(1)">
-        <a class="stats-item-name"><i class="fa fa-fw fa-circle-o"></i><span>Month Commits</span></a>
-      </li>
-      <li class="stats-item" :class="{ 'active': isActive(2) }" @click="itemClick(2)">
-        <a class="stats-item-name"><i class="fa fa-fw fa-align-justify"></i><span>Code Lines</span></a>
-      </li>
-      <li class="stats-item" :class="{ 'active': isActive(3) }" @click="itemClick(3)">
-        <a class="stats-item-name"><i class="fa fa-fw fa-align-justify"></i><span>repo-stats</span></a>
+      <li class="stats-item"
+          @click="itemClick(view, index)"
+          v-for="(view, index) in views"
+          :class="{ 'active': isActive(index) }">
+          <a class="stats-item-name">
+            <span>{{view.name}}</span>
+          </a>
       </li>
     </ul>
   </div>
@@ -26,7 +22,13 @@ import RepoSelector from 'components/RepoSelector.vue'
 export default {
   data () {
     return {
-      activeIndex: 0
+      activeIndex: 0,
+      views: [
+        { name: 'Author List', componentName: 'author-list' },
+        { name: 'Repo Stats', componentName: 'repo-stats' },
+        { name: 'Month Commits', componentName: 'author-list' },
+        { name: 'Code Lines', componentName: 'code-lines' }
+      ]
     }
   },
   components: {
@@ -36,9 +38,9 @@ export default {
     isActive (index) {
       return index === this.activeIndex
     },
-    itemClick (index) {
+    itemClick (view, index) {
       this.activeIndex = index
-      this.$emit('sideBarClick', index)
+      this.$store.commit('setCurrentView', view.componentName)
     }
   }
 }

@@ -5,7 +5,8 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    isDataCollectDone: false,
+    dataCollectDone: false,
+    currentView: 'author-list',
     repositories: [
       {
         name: "Gitlab",
@@ -28,10 +29,13 @@ const store = new Vuex.Store({
       state.selectedRepo = repo
     },
     startDataCollect (state) {
-      state.isDataCollectDone = false
+      state.dataCollectDone = false
     },
     finishDataCollect (state) {
-      state.isDataCollectDone = ture
+      state.dataCollectDone = true
+    },
+    setCurrentView (state, view) {
+      state.currentView = view
     }
   }
 })
