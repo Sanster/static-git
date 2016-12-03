@@ -1,11 +1,10 @@
 <template>
 <div id="repo-selector"
      :class="[{open: optionsVisible}, {close: !optionsVisible}]"
-     v-on-clickaway="hideOptions">
+     v-on-clickaway="hideDrapdown">
   <a href="#"
      class="selector-dropdown__input"
-     @click="toggleDropdown"
-     :onfocusout="hideOptions">
+     @click="toggleDropdown">
     <span v-if="selectedRepo.name == ''">Add a repository</span>
     <span v-else>{{ this.selectedRepo.name }}</span>
     <i class="fa fa-caret-right"></i>
@@ -19,7 +18,7 @@
     </li>
     <li id="add-repo"
         @click="addRepoClicked">
-      <i class="fa fa-folder-open-o"></i>
+      <i class="fa fa-plus"></i>
       Add
     </li>
   </ul>
@@ -27,7 +26,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import electron from 'electron'
+import git from 'modules/git'
 const ipc = electron.ipcRenderer
 import VueClickaway from 'vue-clickaway'
 
@@ -42,37 +43,40 @@ export default {
     ipc.on('selected-directory', this.addRepo)
   },
   computed: {
+    ...mapState ([
+      'repositories',
+      'selectedRepo'
+    ]),
     options () {
-      return this.$store.state.repositories
+      return this.repositories
     },
-    selectedRepo () {
-      return this.$store.state.selectedRepo
-    }
   },
   methods: {
     toggleDropdown () {
       this.optionsVisible = !this.optionsVisible
+    },
+    hideDrapdown () {
+      this.optionsVisible = false
     },
     addRepoClicked () {
       ipc.send('open-file-dialog')
     },
     addRepo (event, path) {
       const repoPath = path[0]
-      this.$git.isGitRepo(repoPath)
+      git.isGitRepo(repoPath)
         .then((repo) => {
+          this.toggleDropdown()
           this.$store.commit('addRepository', repoPath)
-          this.hideOptions()
+          this.$store.dispatch('startDataCollect')
         })
         .catch((error) => {
           ipc.send('open-info-dialog', `This is not a Git Repository. ${error}`)
         })
     },
-    hideOptions () {
-      this.optionsVisible = false
-    },
     selectRepo (repo) {
+      this.toggleDropdown()
       this.$store.commit('setSelectedRepo', repo)
-      this.hideOptions()
+      this.$store.dispatch('startDataCollect')
     }
   }
 }

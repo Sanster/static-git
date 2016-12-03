@@ -26,7 +26,7 @@ export default {
       views: [
         { name: 'Author List', componentName: 'author-list' },
         { name: 'Repo Stats', componentName: 'repo-stats' },
-        { name: 'Month Commits', componentName: 'author-list' },
+        { name: 'Month Commits', componentName: 'month-commits' },
         { name: 'Code Lines', componentName: 'code-lines' }
       ]
     }

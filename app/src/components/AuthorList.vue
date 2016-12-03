@@ -103,7 +103,6 @@ export default {
     },
     pageData () {
       let filteredData
-
       if (this.searchWord) {
         filteredData = fuse.search(this.searchWord)
         if (!this.sortByFuzzySearch)  {
@@ -112,10 +111,8 @@ export default {
       } else {
         filteredData = this.sortData(this.data)
       }
-
       const sliceData = filteredData.slice(this.currentPage * this.perPage,
                                         (this.currentPage + 1) * this.perPage)
-
       this.emptyRow = this.perPage - sliceData.length
       return sliceData
     },

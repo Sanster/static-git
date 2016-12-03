@@ -1,18 +1,16 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import git from 'modules/git'
+import moment from 'moment'
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
     dataCollectDone: false,
+    isCollectingData: false,
     currentView: 'author-list',
-    repositories: [
-      {
-        name: "Gitlab",
-        path: "/Users/cwq/gitlab-development-kit/gitlab"
-      }
-    ],
+    repositories: [],
     selectedRepo: {
       name: '',
       path: ''
@@ -28,14 +26,38 @@ const store = new Vuex.Store({
     setSelectedRepo (state, repo) {
       state.selectedRepo = repo
     },
-    startDataCollect (state) {
+    dataCollectStart (state) {
       state.dataCollectDone = false
+      state.isCollectingData = true
     },
-    finishDataCollect (state) {
+    dataCollectFinish (state) {
       state.dataCollectDone = true
+      state.isCollectingData = false
     },
     setCurrentView (state, view) {
       state.currentView = view
+    }
+  },
+  actions: {
+    startDataCollect ({ commit, state }) {
+      commit('dataCollectStart')
+      git.collectData(state.selectedRepo.path, commit)
+    },
+  },
+  getters: {
+    authorListData: state => {
+      return _.map(git.authorsData, (item) => {
+        return {
+          name: item.name,
+          email: item.email,
+          commits: item.commitsCount.total,
+          additions: item.additions.total,
+          deletions: item.deletions.total,
+          activeDay: item.commitsCount.validDayCount(),
+          firstCommitTime: moment(item.firstCommitTime).format('L'),
+          lastCommitTime: moment(item.lastCommitTime).format('L')
+        }
+      })
     }
   }
 })

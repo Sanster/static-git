@@ -2,7 +2,7 @@ var path = require('path')
 var webpack = require('webpack')
 
 module.exports = {
-  entry: path.resolve(__dirname, '../app/src/main.js'),
+  entry: ['babel-polyfill', path.resolve(__dirname, '../app/src/main.js')],
   output: {
     path: path.resolve(__dirname, '../app/dist'),
     publicPath: path.resolve(__dirname, '../app/dist') + '/',
@@ -30,7 +30,7 @@ module.exports = {
       style: path.join(__dirname, '../app/src/stylesheet'),
       components: path.join(__dirname, '../app/src/components'),
       layout: path.join(__dirname, '../app/src/layout'),
-      utils: path.join(__dirname, '../app/src/utils')
+      modules: path.join(__dirname, '../app/src/modules')
     }
   },
   module: {

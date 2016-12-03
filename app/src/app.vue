@@ -1,13 +1,8 @@
 <template>
   <div class="container">
-    <div class="header">
-    </div>
-
+    <div class="header"> </div>
     <sidebar> </sidebar>
-
-    <load-view v-if="!dataCollectDone">
-    </load-view>
-
+    <load-view v-if="isCollectingData"> </load-view>
     <transition name="fade">
       <div class="content"
           v-if="dataCollectDone">
@@ -79,34 +74,17 @@ export default {
     'repo-stats': RepoStats,
     'load-view': LoadView
   },
-  created () {
-    this.$store.commit('startDataCollect')
-    this.$git.collectData(this.showData)
-  },
   computed: {
     ...mapState ([
       'currentView',
-      'dataCollectDone'
+      'dataCollectDone',
+      'isCollectingData'
     ]),
-    authorListData () {
-      return _.map(this.$git.authorsData, (item) => {
-        return {
-          name: item.name,
-          email: item.email,
-          commits: item.commitsCount.total,
-          additions: item.additions.total,
-          deletions: item.deletions.total,
-          activeDay: item.commitsCount.validDayCount(),
-          firstCommitTime: moment(item.firstCommitTime).format('L'),
-          lastCommitTime: moment(item.lastCommitTime).format('L')
-        }
-      })
-    },
     options () {
       if (this.currentView === 'author-list') {
         return {
           fields: this.authorListFields,
-          data: this.authorListData,
+          data: this.$store.getters.authorListData,
           perPage: 12
         }
       } else if (this.currentView === 'month-commits') {
@@ -118,11 +96,6 @@ export default {
           repoData: this.$git.repoData
         }
       }
-    }
-  },
-  methods: {
-    showData () {
-      this.$store.commit('finishDataCollect')
     }
   }
 }
