@@ -89,7 +89,7 @@ export default {
   height: 48px;
   line-height: 48px;
   text-align: center;
-  box-shadow: 0px 3px 5px -3px #231d1d;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.38);
 
   &.open {
     background: $black;

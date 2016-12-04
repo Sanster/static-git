@@ -5,10 +5,11 @@
         <div class="author-list-title">
           <span>{{totalAuthors}}</span>
           <h3>Contributors</h3>
+          <span>on master</span>
         </div>
       </div>
       <input type="text" class="author-search-input input-control"
-        placeholder="Search"
+        placeholder="Search name"
         v-model="searchWord">
     </div>
     <table class="author-list-table">
@@ -41,10 +42,6 @@
             </div>
           </td>
         <tr>
-        <tr v-for="n in emptyRow"
-            class="empty-row">
-          <td v-for="j in fields.length"></td>
-        </tr>
       </tbody>
     </table>
     <div class="card-footer">
@@ -74,7 +71,6 @@ export default {
       currentPage: 0,
       initSortKey: 'commits',
       sortKey: '',
-      emptyRow: 0,
       downSort: true,
       sortedData: {},
       searchWord: "",
@@ -113,7 +109,6 @@ export default {
       }
       const sliceData = filteredData.slice(this.currentPage * this.perPage,
                                         (this.currentPage + 1) * this.perPage)
-      this.emptyRow = this.perPage - sliceData.length
       return sliceData
     },
   },
@@ -209,6 +204,7 @@ export default {
 
     .field__header {
       position: relative;
+      width: 100%;
     }
 
     .sort-icon {
@@ -227,15 +223,20 @@ export default {
     height: 22px;
     cursor: pointer;
     vertical-align: center;
+
+    .name__col {
+      display: flex;
+      align-items: center;
+    }
   }
 
   .name__col {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    display: flex;
     align-items: center;
     text-align: left;
+    width: 160px;
   }
 }
 
