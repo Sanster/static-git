@@ -17,6 +17,7 @@
 <script>
 import Chart from 'chart.js'
 import AuthorList from 'components/AuthorList.vue'
+import { mapState } from 'vuex'
 
 export default {
   props: [
@@ -55,6 +56,9 @@ export default {
     'author-list': AuthorList
   },
   computed: {
+    ...mapState ([
+      'git',
+    ]),
     authorsData () {
       return this.options.authorsData
     },
@@ -70,7 +74,7 @@ export default {
   },
   methods: {
     authorListData (startDate, endDate) {
-      return _.map(this.$git.authorsDataDuringDate(startDate, endDate), (item) => {
+      return _.map(this.git.authorsDataDuringDate(startDate, endDate), (item) => {
         return {
           name: item.name,
           email: item.email,
@@ -96,7 +100,7 @@ export default {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         datasets: [{
           label: 'Commits',
-          data: this.$git.repoData.commitsCount.countByMonth()[this.selectedYear],
+          data: this.git.repoData.commitsCount.countByMonth()[this.selectedYear],
           backgroundColor: 'rgba(255, 149, 40, 0.79)'
         }]
       },

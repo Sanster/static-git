@@ -78,24 +78,39 @@ export default {
     ...mapState ([
       'currentView',
       'dataCollectDone',
-      'isCollectingData'
+      'isCollectingData',
+      'git'
     ]),
     options () {
       if (this.currentView === 'author-list') {
         return {
           fields: this.authorListFields,
-          data: this.$store.getters.authorListData,
+          data: this.authorListData,
           perPage: 12
         }
       } else if (this.currentView === 'month-commits') {
         return {
-          authorsData: this.$git.authorsData
+          authorsData: this.git.authorsData
         }
       } else if (this.currentView === 'code-lines') {
         return {
-          repoData: this.$git.repoData
+          repoData: this.git.repoData
         }
       }
+    },
+    authorListData () {
+      return _.map(this.git.authorsData, (item) => {
+        return {
+          name: item.name,
+          email: item.email,
+          commits: item.commitsCount.total,
+          additions: item.additions.total,
+          deletions: item.deletions.total,
+          activeDay: item.commitsCount.validDayCount(),
+          firstCommitTime: moment(item.firstCommitTime).format('L'),
+          lastCommitTime: moment(item.lastCommitTime).format('L')
+        }
+      })
     }
   }
 }

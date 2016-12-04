@@ -20,19 +20,24 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   props: [
     'options'
   ],
   computed: {
+    ...mapState([
+      'git'
+    ]),
     totalLines () {
-      return this.$git.repoData.codeLines.total
+      return this.git.repoData.codeLines.total
     },
     totalCommits () {
-      return this.$git.repoData.commitsCount.total
+      return this.git.repoData.commitsCount.total
     },
     totalContributors () {
-      return this.$git.authorsData.length
+      return this.git.authorsData.length
     }
   },
   methods: {

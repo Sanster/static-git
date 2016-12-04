@@ -7,6 +7,7 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
+    git,
     dataCollectDone: false,
     isCollectingData: false,
     currentView: 'author-list',
@@ -43,22 +44,6 @@ const store = new Vuex.Store({
       commit('dataCollectStart')
       git.collectData(state.selectedRepo.path, commit)
     },
-  },
-  getters: {
-    authorListData: state => {
-      return _.map(git.authorsData, (item) => {
-        return {
-          name: item.name,
-          email: item.email,
-          commits: item.commitsCount.total,
-          additions: item.additions.total,
-          deletions: item.deletions.total,
-          activeDay: item.commitsCount.validDayCount(),
-          firstCommitTime: moment(item.firstCommitTime).format('L'),
-          lastCommitTime: moment(item.lastCommitTime).format('L')
-        }
-      })
-    }
   }
 })
 
