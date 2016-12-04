@@ -1,9 +1,10 @@
 <template>
-<div class="loading">
+<div class="loading content">
   <div class="spinner">
     <div class="bounce1"></div>
     <div class="bounce2"></div>
     <div class="bounce3"></div>
+    <span>Loading...</span>
   </div>
 </div>
 </template>
@@ -14,8 +15,14 @@ export default {
 </script>
 
 <style lang="sass">
+.loading {
+  height: 100%;
+}
+
 .spinner {
-  margin: 100px auto 0;
+  position: relative;
+  top: 50%;
+  margin: auto;
   width: 70px;
   text-align: center;
 }
