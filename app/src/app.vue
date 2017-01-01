@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="header"> </div>
+    <div class="titleBar"> </div>
     <sidebar> </sidebar>
     <load-view v-if="isCollectingData"> </load-view>
     <transition name="fade">
@@ -121,7 +121,11 @@ body {
   margin: 0;
 }
 
-.header {
-  margin-left: 220px;
+.titleBar {
+  height: 30px;
+  background: white;
+  -webkit-app-region: drag;
 }
+
+
 </style>
