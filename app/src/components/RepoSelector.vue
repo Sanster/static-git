@@ -28,8 +28,8 @@
 <script>
 import { mapState } from 'vuex'
 import electron from 'electron'
-import git from 'modules/git'
 const ipc = electron.ipcRenderer
+import git from 'modules/git'
 import VueClickaway from 'vue-clickaway'
 
 export default {
@@ -43,13 +43,13 @@ export default {
     ipc.on('selected-directory', this.addRepo)
   },
   computed: {
-    ...mapState ([
+    ...mapState([
       'repositories',
       'selectedRepo'
     ]),
     options () {
       return this.repositories
-    },
+    }
   },
   methods: {
     toggleDropdown () {

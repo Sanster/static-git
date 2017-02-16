@@ -8,7 +8,8 @@
     "watch": "webpack --config scripts/webpack.config.js --watch",
     "start": "cross-env NODE_ENV=development electron app/",
     "lint": "./node_modules/.bin/eslint app --ext .js,.vue || true",
-    "pack": "node tasks/pack.js"
+    "pack": "node tasks/pack.js",
+    "install:hooks": "ln -fs ../../build/git-hooks/pre-commit .git/hooks/pre-commit"
   },
   "author": "",
   "license": "ISC",

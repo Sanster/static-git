@@ -1,29 +1,28 @@
 <template>
   <div class="container">
-    <div class="titleBar"> </div>
-    <sidebar> </sidebar>
+    <title-bar></title-bar>
+    <empty-view v-if="!isCollectingData"></empty-view>
     <load-view v-if="isCollectingData"> </load-view>
-    <transition name="fade">
-      <div class="content"
-          v-if="dataCollectDone">
-        <div class="content-detail">
-          <transition name="fade" mode="out-in">
-            <keep-alive>
-              <component :is="currentView" :options="options"></component>
-            </keep-alive>
-          </transition>
-        </div>
+    <div class="content"
+        v-if="dataCollectDone">
+      <div class="content-detail">
+        <transition name="fade" mode="out-in">
+          <keep-alive>
+            <component :is="currentView" :options="options"></component>
+          </keep-alive>
+        </transition>
       </div>
-    </transition>
+    </div>
   </div>
 
 </template>
 
 <script>
+import TitleBar from 'components/TitleBar.vue'
+import EmptyView from 'layout/EmptyView.vue'
 import AuthorList from 'components/AuthorList.vue'
 import MonthCommits from 'components/MonthCommits.vue'
 import CodeLines from 'components/CodeLines.vue'
-import Sidebar from 'layout/Sidebar.vue'
 import RepoStats from 'components/RepoStats.vue'
 import LoadView from 'components/LoadView.vue'
 import moment from 'moment'
@@ -32,9 +31,10 @@ import { mapState } from 'vuex'
 export default {
   data () {
     return {
+
       dataCollectDone: false,
       statsIndex: 0,
-      authorListFields:[
+      authorListFields: [
         {
           label: 'Name',
           key: 'name'
@@ -63,11 +63,12 @@ export default {
           label: 'Last time',
           key: 'lastCommitTime'
         }
-      ],
+      ]
     }
   },
   components: {
-    'sidebar': Sidebar,
+    'empty-view': EmptyView,
+    'title-bar': TitleBar,
     'author-list': AuthorList,
     'month-commits': MonthCommits,
     'code-lines': CodeLines,
@@ -75,7 +76,7 @@ export default {
     'load-view': LoadView
   },
   computed: {
-    ...mapState ([
+    ...mapState([
       'currentView',
       'dataCollectDone',
       'isCollectingData',
@@ -86,7 +87,7 @@ export default {
         return {
           fields: this.authorListFields,
           data: this.authorListData,
-          perPage: 12
+          perPage: 10
         }
       } else if (this.currentView === 'month-commits') {
         return {
@@ -117,15 +118,15 @@ export default {
 </script>
 
 <style lang="sass">
+@import 'stylesheet/vars.scss';
+
 body {
   margin: 0;
 }
 
-.titleBar {
-  height: 30px;
-  background: white;
-  -webkit-app-region: drag;
+.container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
-
-
 </style>
