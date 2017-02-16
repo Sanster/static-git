@@ -29,8 +29,8 @@ function createWindow () {
   // Create the browser window.
   // win = new BrowserWindow({width: 800, height: 600, titleBarStyle: 'hidden'})
   win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 960,
+    height: 720,
     titleBarStyle: 'hidden-inset'
   })
 
