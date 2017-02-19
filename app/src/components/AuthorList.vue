@@ -3,13 +3,22 @@
     <div class="card-header">
       <div class="card-title">
         <div class="author-list-title">
-          <span>{{totalAuthors}}</span>
+          <span>{{totalAuthrs}}</span>
           <h3>Contributors</h3>
         </div>
       </div>
-      <input type="text" class="author-search-input input-control"
-        placeholder="Search name"
-        v-model="searchWord">
+      <div
+        class="search"
+        :class="{ active: searchFocused }">
+        <i class="fa fa-search search-icon"></i>
+        <input
+          type="text"
+          class="author-search-input"
+          placeholder="name"
+          v-model="searchWord"
+          @focus="handleSearchFocus"
+          @blur="handleSearchBlur">
+      </div>
     </div>
     <table class="author-list-table">
       <thead>
@@ -73,7 +82,8 @@ export default {
       downSort: true,
       sortedData: {},
       searchWord: '',
-      sortByFuzzySearch: false
+      sortByFuzzySearch: false,
+      searchFocused: false
     }
   },
   beforeMount () {
@@ -112,6 +122,12 @@ export default {
     }
   },
   methods: {
+    handleSearchFocus () {
+      this.searchFocused = true
+    },
+    handleSearchBlur () {
+      this.searchFocused = false
+    },
     pageChange (page) {
       this.currentPage = page
     },
@@ -250,5 +266,29 @@ export default {
   height: 25px;
   width: 150px;
   margin-right: 50px;
+  border: 0px;
+  border-bottom: 1px solid #dcd9d9;
+  padding-left: 22px;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.search {
+  position: absolute;
+  right: 0px;
+
+  .search-icon {
+    position: absolute;
+    top: 5px;
+    color: #dcd9d9;
+  }
+
+  &.active {
+    .search-icon {
+      color: gray;
+    }
+  }
 }
 </style>

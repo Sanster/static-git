@@ -52,15 +52,16 @@ a {
 }
 
 .card-title {
-  margin: 0px;
-  position: relative;
-  left: 30px;
   display: inline-block;
+  position: absolute;
+  margin: 0px;
+  left: 30px;
 }
 
 .card-header {
+  position: relative;
   padding-top: 20px;
-  padding-bottom: 25px;
+  margin-bottom: 50px;
 }
 
 .card-footer {
