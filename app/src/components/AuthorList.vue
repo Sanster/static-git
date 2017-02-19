@@ -289,6 +289,10 @@ export default {
     .search-icon {
       color: gray;
     }
+
+    .author-search-input {
+      border-bottom: 1px solid gray;
+    }
   }
 }
 </style>

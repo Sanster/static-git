@@ -84,13 +84,12 @@ $pagination-height: 20px;
   justify-content: center;
 
   .page-input {
-    width: 23px;
+    width: 20px;
     height: $pagination-height;
     padding: 0;
     text-align: center;
-    border-radius: 2px;
-    border: 1px solid $gray;
-    font-size: 15px;
+    border: none;
+    font-size: 18px;
     font-family: inherit;
 
     &:focus {
@@ -107,6 +106,9 @@ $pagination-height: 20px;
   .total-page {
     font-size: 18px;
     cursor: pointer;
+    display: inline-block;
+    width: 20px;
+    text-align: center;
   }
 
   .btn-next, .btn-prev {
