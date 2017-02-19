@@ -44,11 +44,11 @@ export default {
           key: 'commits'
         },
         {
-          label: 'Line ++',
+          label: '+ +',
           key: 'additions'
         },
         {
-          label: 'Line --',
+          label: '- -',
           key: 'deletions'
         },
         {
@@ -56,11 +56,11 @@ export default {
           key: 'activeDay'
         },
         {
-          label: 'First time',
+          label: 'First Commit',
           key: 'firstCommitTime'
         },
         {
-          label: 'Last time',
+          label: 'Last Commit',
           key: 'lastCommitTime'
         }
       ]
