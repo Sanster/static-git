@@ -45,10 +45,14 @@ export default {
 @import '../stylesheet/vars.scss';
 
 .empty-view {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: $titleBar-height;
 }
 
 #project-add-btn {

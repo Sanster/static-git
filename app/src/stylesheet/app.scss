@@ -20,17 +20,17 @@ a {
 
 .content {
   position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
+  padding-top: $titleBar-height;
+  top: 0px;
+  bottom: 0px;
+  width: 100%;
   background: #f7f7f7;
 }
 
 .content-detail {
   width: 90%;
   margin: auto;
-  margin-top: 40px;
+  margin-top: 15px;
 }
 
 .canvas-container {
