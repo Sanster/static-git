@@ -48,7 +48,7 @@ class Git {
       for (let i = 0; i < commits.length; i++) {
         const commit = commits[i]
 
-        if (commit.parentcount() !== 1) {
+        if (commit.parentcount() > 1) {
           continue
         }
 
