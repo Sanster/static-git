@@ -1,5 +1,4 @@
 import NodeGit from 'nodegit'
-import moment from 'moment'
 import AuthorData from './AuthorData.js'
 import RepoData from './RepoData.js'
 import storage from 'electron-json-storage'
@@ -8,21 +7,22 @@ class Git {
   constructor () {
     this.authorsData = {}
     this._maxCommitsWalkCount = 25639
-    // cached 'allc'
-    this.storageKey = 'allc'
+    this.storageKey = 'vue'
     this.repoData = new RepoData()
+    this.branch = 'dev'
   }
 
   collectData (repoPath, storeCommit) {
-    // storage.has(this.storageKey, (error, hasKey) => {
-      // if (error) throw error
-      // if (hasKey) {
-        // this._restoreStorageData()
-      // } else {
-        console.log('Start walk through repo.')
+    storage.has(this.storageKey, (error, hasKey) => {
+      if (error) throw error
+      if (hasKey) {
+        console.info('从缓存中恢复仓库数据')
+        this._restoreStorageData(storeCommit)
+      } else {
+        console.info('开始遍历仓库')
         this._walkThroughRepo(repoPath, storeCommit)
-      // }
-    // })
+      }
+    })
   }
 
   _getAuthorData (author) {
@@ -40,13 +40,13 @@ class Git {
   }
 
   async _walkThroughRepo (repoPath, storeCommit) {
-    let repo = await NodeGit.Repository.open(repoPath)
-    let firstCommitOnMaster = await repo.getMasterCommit()
-    var history = firstCommitOnMaster.history()
+    const repo = await NodeGit.Repository.open(repoPath)
+    const headCommit = await repo.getBranchCommit(this.branch)
+    var history = headCommit.history()
 
     history.on('end', async (commits) => {
-      for(let i=0; i<commits.length; i++) {
-        let commit = commits[i]
+      for (let i = 0; i < commits.length; i++) {
+        const commit = commits[i]
 
         if (commit.parentcount() !== 1) {
           continue
@@ -59,14 +59,14 @@ class Git {
         authorData.saveCommitDate(commitDate)
         this.repoData.saveCommitDate(commitDate)
 
-        let arrayDiff = await commit.getDiff()
-        let size = arrayDiff.length
-        for(let j=0; j<arrayDiff.length; j++) {
-          let arrayPatch = await arrayDiff[j].patches()
+        const arrayDiff = await commit.getDiff()
+
+        for (let j = 0; j < arrayDiff.length; j++) {
+          const arrayPatch = await arrayDiff[j].patches()
           arrayPatch.forEach((patch) => {
             const stats = patch.lineStats()
-            let add = stats.total_additions
-            let del = stats.total_deletions
+            const add = stats.total_additions
+            const del = stats.total_deletions
             this.repoData.saveCodeLine(commitDate, add, del)
             this.repoData.additions.increaseByDate(commitDate, add)
             this.repoData.deletions.increaseByDate(commitDate, del)
@@ -76,10 +76,11 @@ class Git {
         }
       }
       storeCommit('dataCollectFinish')
+      this._saveStorageData()
     })
 
     history.on('error', (error) => {
-      console.log(`History error: ${error}`)
+      console.error(`History error: ${error}`)
     })
 
     history.start()
@@ -87,28 +88,27 @@ class Git {
 
   _saveStorageData () {
     const storageData = {
-      "authorsData": this.authorsData,
-      "repoData": this.repoData
+      'authorsData': this.authorsData,
+      'repoData': this.repoData
     }
-    storage.set(this.storageKey, storageData, function(error) {
+    storage.set(this.storageKey, storageData, error => {
       if (error) throw error
-    });
+    })
   }
 
-  _restoreStorageData () {
+  _restoreStorageData (storeCommit) {
     storage.get(this.storageKey, (error, data) => {
       if (error) throw error
-      console.log("Read data from cache.")
 
       this.authorsData = _.map(data.authorsData, (storageData) => {
         return new AuthorData(storageData)
       })
       this.repoData = new RepoData(data.repoData)
 
-      console.log("Finish read data from cache.")
+      storeCommit('dataCollectFinish')
+      console.log('仓库数据恢复完毕')
     })
   }
-
 
 // remove 0 commits author during date
   authorsDataDuringDate (startDate, endDate) {

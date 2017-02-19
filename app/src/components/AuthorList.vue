@@ -5,7 +5,6 @@
         <div class="author-list-title">
           <span>{{totalAuthors}}</span>
           <h3>Contributors</h3>
-          <span>on master</span>
         </div>
       </div>
       <input type="text" class="author-search-input input-control"
@@ -73,13 +72,13 @@ export default {
       sortKey: '',
       downSort: true,
       sortedData: {},
-      searchWord: "",
+      searchWord: '',
       sortByFuzzySearch: false
     }
   },
   beforeMount () {
     this.sortByKey(this.initSortKey)
-    fuse = new Fuse(this.data, { keys: ["name"] });
+    fuse = new Fuse(this.data, { keys: ['name'] })
   },
   computed: {
     totalPage () {
@@ -101,7 +100,7 @@ export default {
       let filteredData
       if (this.searchWord) {
         filteredData = fuse.search(this.searchWord)
-        if (!this.sortByFuzzySearch)  {
+        if (!this.sortByFuzzySearch) {
           filteredData = this.sortData(filteredData)
         }
       } else {
@@ -110,7 +109,7 @@ export default {
       const sliceData = filteredData.slice(this.currentPage * this.perPage,
                                         (this.currentPage + 1) * this.perPage)
       return sliceData
-    },
+    }
   },
   methods: {
     pageChange (page) {
@@ -120,8 +119,8 @@ export default {
       const downSort = this.downSort
 
       return function (authorData1, authorData2) {
-        let compareVal1 = authorData1[key]
-        let compareVal2 = authorData2[key]
+        const compareVal1 = authorData1[key]
+        const compareVal2 = authorData2[key]
 
         if (compareVal1 > compareVal2) {
           return downSort ? -1 : 1
@@ -146,13 +145,13 @@ export default {
       return dataToSort.slice().sort(this.compareKey(this.sortKey))
     },
     getGravatarUrl (email) {
-      return gravatar.url(email, {protocol: 'http', default: 'mm'})
+      return gravatar.url(email, { protocol: 'http', default: 'mm' })
     }
   },
   watch: {
-    data: function() {
+    data: function () {
       this.downSort = true
-      this.sortKey = ""
+      this.sortKey = ''
       this.sortByKey(this.initSortKey)
     },
     searchWord: function () {

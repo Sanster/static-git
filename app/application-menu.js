@@ -1,4 +1,5 @@
 const BrowserWindow = require('electron').BrowserWindow
+const storage = require('electron-json-storage')
 
 module.exports = [{
   label: 'View',
@@ -30,6 +31,13 @@ module.exports = [{
       if (focusedWindow) {
         focusedWindow.toggleDevTools()
       }
+    }
+  }, {
+    label: 'clear cache',
+    click: function () {
+      storage.clear(() => {
+        console.info('清除 cache 成功')
+      })
     }
   }]
 }]
