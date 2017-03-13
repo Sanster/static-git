@@ -1,13 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import git from 'modules/git'
-import moment from 'moment'
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    git,
     dataCollectDone: false,
     isCollectingData: false,
     currentView: 'author-list',
@@ -43,7 +41,7 @@ const store = new Vuex.Store({
     startDataCollect ({ commit, state }) {
       commit('dataCollectStart')
       git.collectData(state.selectedRepo.path, commit)
-    },
+    }
   }
 })
 

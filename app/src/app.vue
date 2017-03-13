@@ -24,10 +24,11 @@ import LoadView from 'components/LoadView.vue'
 import moment from 'moment'
 import { mapState } from 'vuex'
 
+import git from 'modules/git'
+
 export default {
   data () {
     return {
-
       dataCollectDone: false,
       statsIndex: 0
     }
@@ -43,8 +44,7 @@ export default {
     ...mapState([
       'currentView',
       'dataCollectDone',
-      'isCollectingData',
-      'git'
+      'isCollectingData'
     ]),
     options () {
       switch (this.currentView) {
@@ -58,7 +58,7 @@ export default {
       }
     },
     authorListData () {
-      return _.map(this.git.authorsData, (item) => {
+      return _.map(git.authorsData, (item) => {
         return {
           name: item.name,
           email: item.email,

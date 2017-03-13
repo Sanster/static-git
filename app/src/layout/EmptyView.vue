@@ -25,17 +25,16 @@ export default {
     selectProject () {
       ipc.send('open-file-dialog')
     },
-    addRepo (event, path) {
+    async addRepo (event, path) {
       const repoPath = path[0]
-      git.isGitRepo(repoPath)
-        .then((repo) => {
-          this.$store.commit('addRepository', repoPath)
-          this.$store.dispatch('startDataCollect')
-        })
-        .catch((error) => {
-          console.error(error)
-          ipc.send('open-info-dialog', `This is not a Git Repository. ${error}`)
-        })
+      try {
+        await git.isGitRepo(repoPath)
+        this.$store.commit('addRepository', repoPath)
+        this.$store.dispatch('startDataCollect')
+      } catch (error) {
+        console.error(error)
+        ipc.send('open-info-dialog', `This is not a Git Repository. ${error}`)
+      }
     }
   }
 }
