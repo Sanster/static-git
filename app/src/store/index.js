@@ -16,14 +16,9 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
-    addRepository (state, path) {
+    setSelectedRepo (state, path) {
       const name = _(path.split('/')).last()
-      const repo = { name, path }
-      state.repositories.push(repo)
-      state.selectedRepo = repo
-    },
-    setSelectedRepo (state, repo) {
-      state.selectedRepo = repo
+      state.selectedRepo = { name, path }
     },
     dataCollectStart (state) {
       state.dataCollectDone = false
@@ -39,8 +34,7 @@ const store = new Vuex.Store({
   },
   actions: {
     startDataCollect ({ commit, state }) {
-      commit('dataCollectStart')
-      git.collectData(state.selectedRepo.path, commit)
+      git.collectData(state.selectedRepo)
     }
   }
 })

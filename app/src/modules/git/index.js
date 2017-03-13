@@ -2,25 +2,27 @@ import NodeGit from 'nodegit'
 import AuthorData from './AuthorData.js'
 import RepoData from './RepoData.js'
 import storage from 'electron-json-storage'
+import vStore from 'store'
 
 class Git {
   constructor () {
     this.authorsData = {}
-    this._maxCommitsWalkCount = 25639
-    this.storageKey = 'vue'
+    this.storageKey = ''
     this.repoData = new RepoData()
-    this.branch = 'dev'
+    this.branch = 'master'
   }
 
-  collectData (repoPath, storeCommit) {
+  collectData (repo) {
+    const repoPath = repo.path
+    this.storageKey = repo.name
     storage.has(this.storageKey, (error, hasKey) => {
       if (error) throw error
       if (hasKey) {
         console.info('从缓存中恢复仓库数据')
-        this._restoreStorageData(storeCommit)
+        this._restoreStorageData()
       } else {
         console.info('开始遍历仓库')
-        this._walkThroughRepo(repoPath, storeCommit)
+        this._walkThroughRepo(repoPath)
       }
     })
   }
@@ -39,7 +41,7 @@ class Git {
     return NodeGit.Repository.open(path)
   }
 
-  async _walkThroughRepo (repoPath, storeCommit) {
+  async _walkThroughRepo (repoPath) {
     const repo = await NodeGit.Repository.open(repoPath)
     const headCommit = await repo.getBranchCommit(this.branch)
     var history = headCommit.history()
@@ -75,7 +77,7 @@ class Git {
           })
         }
       }
-      storeCommit('dataCollectFinish')
+      vStore.commit('dataCollectFinish')
       this._saveStorageData()
     })
 
@@ -96,7 +98,7 @@ class Git {
     })
   }
 
-  _restoreStorageData (storeCommit) {
+  _restoreStorageData () {
     storage.get(this.storageKey, (error, data) => {
       if (error) throw error
 
@@ -105,7 +107,7 @@ class Git {
       })
       this.repoData = new RepoData(data.repoData)
 
-      storeCommit('dataCollectFinish')
+      vStore.commit('dataCollectFinish')
       console.log('仓库数据恢复完毕')
     })
   }

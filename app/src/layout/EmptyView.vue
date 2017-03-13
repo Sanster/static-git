@@ -29,7 +29,8 @@ export default {
       const repoPath = path[0]
       try {
         await git.isGitRepo(repoPath)
-        this.$store.commit('addRepository', repoPath)
+        this.$store.commit('setSelectedRepo', repoPath)
+        this.$store.commit('dataCollectStart')
         this.$store.dispatch('startDataCollect')
       } catch (error) {
         console.error(error)

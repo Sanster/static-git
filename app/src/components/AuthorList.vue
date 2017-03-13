@@ -3,7 +3,7 @@
     <div class="card-header">
       <div class="card-title">
         <div class="author-list-title">
-          <span>{{totalAuthrs}}</span>
+          <span>{{totalAuthors}}</span>
           <h3>Contributors</h3>
         </div>
       </div>
@@ -115,7 +115,7 @@ export default {
       return Math.ceil(this.data.length / this.perPage)
     },
     totalAuthors () {
-      return this.data.length
+      return this.options.data.length
     },
     data () {
       return this.options.data
