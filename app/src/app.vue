@@ -6,11 +6,9 @@
     <div class="content"
         v-if="dataCollectDone">
       <div class="content-detail">
-        <transition name="fade" mode="out-in">
           <keep-alive>
             <component :is="currentView" :options="options"></component>
           </keep-alive>
-        </transition>
       </div>
     </div>
   </div>

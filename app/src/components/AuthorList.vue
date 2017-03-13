@@ -38,7 +38,7 @@
       </thead>
       <tbody v-cloak>
         <tr v-for="(data, index) in pageData">
-          <td>{{currentPage * perPage + index + 1}}</td>
+          <td>{{index + 1}}</td>
           <td v-for="field in fields">
             <div :class="field.key + '__col'">
               <template v-if="field.key === 'name'">
@@ -52,16 +52,10 @@
         <tr>
       </tbody>
     </table>
-    <div class="card-footer">
-      <pagination :total="totalPage"
-                  v-on:currentChange="pageChange"></pagination>
-    </div>
-
   </div>
 </template>
 
 <script>
-import Pagination from './Pagination.vue'
 import Fuse from 'fuse.js'
 import gravatar from 'gravatar'
 
@@ -71,12 +65,8 @@ export default {
   props: [
     'options'
   ],
-  components: {
-    'pagination': Pagination
-  },
   data () {
     return {
-      currentPage: 0,
       initSortKey: 'commits',
       sortKey: '',
       downSort: true,
@@ -103,9 +93,6 @@ export default {
     data () {
       return this.options.data
     },
-    perPage () {
-      return this.options.perPage
-    },
     pageData () {
       let filteredData
       if (this.searchWord) {
@@ -116,9 +103,8 @@ export default {
       } else {
         filteredData = this.sortData(this.data)
       }
-      const sliceData = filteredData.slice(this.currentPage * this.perPage,
-                                        (this.currentPage + 1) * this.perPage)
-      return sliceData
+
+      return filteredData
     }
   },
   methods: {
