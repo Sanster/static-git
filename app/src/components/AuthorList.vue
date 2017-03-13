@@ -73,7 +73,37 @@ export default {
       sortedData: {},
       searchWord: '',
       sortByFuzzySearch: false,
-      searchFocused: false
+      searchFocused: false,
+      fields: [
+        {
+          label: 'Name',
+          key: 'name'
+        },
+        {
+          label: 'Commits',
+          key: 'commits'
+        },
+        {
+          label: '+ +',
+          key: 'additions'
+        },
+        {
+          label: '- -',
+          key: 'deletions'
+        },
+        {
+          label: 'Active Days',
+          key: 'activeDay'
+        },
+        {
+          label: 'First Commit',
+          key: 'firstCommitTime'
+        },
+        {
+          label: 'Last Commit',
+          key: 'lastCommitTime'
+        }
+      ]
     }
   },
   beforeMount () {
@@ -86,9 +116,6 @@ export default {
     },
     totalAuthors () {
       return this.data.length
-    },
-    fields () {
-      return this.options.fields
     },
     data () {
       return this.options.data

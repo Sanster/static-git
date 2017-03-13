@@ -19,8 +19,6 @@
 import TitleBar from 'components/TitleBar.vue'
 import EmptyView from 'layout/EmptyView.vue'
 import AuthorList from 'components/AuthorList.vue'
-import MonthCommits from 'components/MonthCommits.vue'
-import CodeLines from 'components/CodeLines.vue'
 import RepoStats from 'components/RepoStats.vue'
 import LoadView from 'components/LoadView.vue'
 import moment from 'moment'
@@ -31,45 +29,13 @@ export default {
     return {
 
       dataCollectDone: false,
-      statsIndex: 0,
-      authorListFields: [
-        {
-          label: 'Name',
-          key: 'name'
-        },
-        {
-          label: 'Commits',
-          key: 'commits'
-        },
-        {
-          label: '+ +',
-          key: 'additions'
-        },
-        {
-          label: '- -',
-          key: 'deletions'
-        },
-        {
-          label: 'Active Days',
-          key: 'activeDay'
-        },
-        {
-          label: 'First Commit',
-          key: 'firstCommitTime'
-        },
-        {
-          label: 'Last Commit',
-          key: 'lastCommitTime'
-        }
-      ]
+      statsIndex: 0
     }
   },
   components: {
     'empty-view': EmptyView,
     'title-bar': TitleBar,
     'author-list': AuthorList,
-    'month-commits': MonthCommits,
-    'code-lines': CodeLines,
     'repo-stats': RepoStats,
     'load-view': LoadView
   },
@@ -81,20 +47,14 @@ export default {
       'git'
     ]),
     options () {
-      if (this.currentView === 'author-list') {
-        return {
-          fields: this.authorListFields,
-          data: this.authorListData,
-          perPage: 10
-        }
-      } else if (this.currentView === 'month-commits') {
-        return {
-          authorsData: this.git.authorsData
-        }
-      } else if (this.currentView === 'code-lines') {
-        return {
-          repoData: this.git.repoData
-        }
+      switch (this.currentView) {
+        case 'author-list':
+          return {
+            data: this.authorListData
+          }
+        case 'repo-stats':
+
+          break
       }
     },
     authorListData () {
