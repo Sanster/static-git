@@ -9,8 +9,8 @@ let win
 
 function createWindow () {
   win = new BrowserWindow({
-    width: 960,
-    height: 600,
+    width: 1024,
+    height: 720,
     titleBarStyle: 'hidden-inset'
   })
 

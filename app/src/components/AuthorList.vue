@@ -46,7 +46,7 @@
                      :title="data['email']"
                      class="author-avatar"/>
               </template>
-              {{data[field.key]}}
+              <span> {{data[field.key]}} </span>
             </div>
           </td>
         <tr>
@@ -236,7 +236,7 @@ export default {
     }
 
     .sort-icon {
-      position: absolute;
+      position: relative;
       right: 0px;
     }
   }
@@ -267,7 +267,22 @@ export default {
     white-space: nowrap;
     align-items: center;
     text-align: left;
-    width: 160px;
+    width: 140px;
+  }
+
+  .commits__col {
+    width: 90px;
+  }
+
+  .additions__col,
+  .deletions__col {
+    width: 60px;
+  }
+
+  .activeDay__col,
+  .firstCommitTime__col,
+  .lastCommitTime__col {
+    width: 100px;
   }
 }
 
