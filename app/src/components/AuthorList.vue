@@ -244,6 +244,9 @@ export default {
   th, td {
     padding: 9px;
     text-align: center;
+  }
+
+  tr {
     border-bottom: 1px solid #e6e6e6;
   }
 
@@ -278,7 +281,6 @@ export default {
   float: right;
   height: 25px;
   width: 150px;
-  margin-right: 50px;
   border: 0px;
   border-bottom: 1px solid #dcd9d9;
   padding-left: 22px;
