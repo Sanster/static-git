@@ -23,10 +23,12 @@ export default {
   },
   methods: {
     selectProject () {
-      ipc.send('open-file-dialog')
+      // ipc.send('open-file-dialog')
+      this.addRepo()
     },
     async addRepo (event, path) {
-      const repoPath = path[0]
+      // const repoPath = path[0]
+      const repoPath = '/Users/cwq/Github/vue'
       try {
         await git.isGitRepo(repoPath)
         this.$store.commit('setSelectedRepo', repoPath)

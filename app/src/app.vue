@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <title-bar></title-bar>
-    <empty-view v-if="!isCollectingData"></empty-view>
+    <empty-view v-if="!dataCollectDone && !isCollectingData"></empty-view>
     <load-view v-if="isCollectingData"> </load-view>
     <div class="content"
         v-if="dataCollectDone">
