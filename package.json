@@ -56,6 +56,7 @@
     "nodegit": "^0.16.0",
     "vue": "^2.0.3",
     "vue-clickaway": "^2.0.0",
+    "vue-lazyload": "^1.0.0-rc12",
     "vuex": "^2.0.0"
   }
 }

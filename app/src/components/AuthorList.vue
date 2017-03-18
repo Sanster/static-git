@@ -42,7 +42,7 @@
           <td v-for="field in fields">
             <div :class="field.key + '__col'">
               <template v-if="field.key === 'name'">
-                <img :src="getGravatarUrl(data['email'])"
+                <img v-lazy="getGravatarUrl(data['email'])"
                      :title="data['email']"
                      class="author-avatar"/>
               </template>
@@ -201,6 +201,7 @@ export default {
 .author-avatar {
   height: 30px;
   width: 30px;
+  min-width: 30px;
   border-radius: 15px;
   margin-right: 10px;
 }
