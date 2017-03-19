@@ -42,7 +42,7 @@
           </el-tooltip>
           </th>
           <th v-for="field in fields"
-              @click.prevent="sortByKey(field.key)"
+              @click.prevent="setSortKey(field.key)"
               :class="field.key + '__col'">
             <div class="field__header"
                 :class="downSort ? 'down' : 'up'">
@@ -91,6 +91,7 @@ export default {
       searchWord: '',
       sortByFuzzySearch: false,
       searchFocused: false,
+      authorListData: {},
       fields: [
         { label: 'Name', key: 'name' },
         { label: 'Commits', key: 'commits' },
@@ -103,24 +104,11 @@ export default {
     }
   },
   beforeMount () {
-    this.sortByKey(this.initSortKey)
+    this.setSortKey(this.initSortKey)
+    this.authorListData = this.getAuthorDataArray()
     fuse = new Fuse(this.authorListData, { keys: ['name'] })
   },
   computed: {
-    authorListData () {
-      return _.map(git.authorsData, item => {
-        return {
-          name: item.name,
-          email: item.email,
-          commits: item.commitsCount.total,
-          additions: item.additions.total,
-          deletions: item.deletions.total,
-          activeDay: item.commitsCount.validDayCount(),
-          firstCommitTime: moment(item.firstCommitTime).format('L'),
-          lastCommitTime: moment(item.lastCommitTime).format('L')
-        }
-      })
-    },
     totalAuthors () {
       return this.authorListData.length
     },
@@ -140,6 +128,34 @@ export default {
     }
   },
   methods: {
+    getAuthorDataArray ({ startDate, endDate } = { startDate: null, endDate: null }) {
+      return _.map(git.authorsData, item => {
+        let commits, add, del
+
+        if (!startDate && !endDate) {
+          commits = item.commitsCount.total
+          add = item.additions.total
+          del = item.deletions.total
+        }
+
+        if (startDate && endDate) {
+          commits = item.commitsCount.totalDuringDate(startDate, endDate)
+          add = item.additions.totalDuringDate(startDate, endDate)
+          del = item.deletions.totalDuringDate(startDate, endDate)
+        }
+
+        return {
+          name: item.name,
+          email: item.email,
+          commits: commits,
+          additions: add,
+          deletions: del,
+          activeDay: item.commitsCount.validDayCount(),
+          firstCommitTime: moment(item.firstCommitTime).format('L'),
+          lastCommitTime: moment(item.lastCommitTime).format('L')
+        }
+      })
+    },
     handleSearchFocus () {
       this.searchFocused = true
     },
@@ -162,7 +178,7 @@ export default {
         return 0
       }
     },
-    sortByKey (key) {
+    setSortKey (key) {
       this.sortByFuzzySearch = false
 
       if (this.sortKey !== key) {
@@ -179,16 +195,21 @@ export default {
       return gravatar.url(email, { protocol: 'http', default: 'mm' })
     },
     getPeriodData () {
-      console.log(this.startDate)
-      console.log(this.endDate)
+      this.authorListData = this.getAuthorDataArray({ startDate: this.startDate, endDate: this.endDate })
+      this.authorListData = this.getNoneZeroAuthors(this.authorListData)
+      this.setSortKey(this.initSortKey)
+    },
+    getNoneZeroAuthors (authors) {
+      const res = []
+      authors.forEach(author => {
+        if (author.additions !== 0 && author.deletions !== 0 && author.commits !== 0) {
+          res.push(author)
+        }
+      })
+      return res
     }
   },
   watch: {
-    authorListData () {
-      this.downSort = true
-      this.sortKey = ''
-      this.sortByKey(this.initSortKey)
-    },
     searchWord () {
       this.sortByFuzzySearch = true
     }
