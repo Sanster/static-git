@@ -19,6 +19,7 @@
         placeholder="End Date">
       </el-date-picker>
 
+      <el-button @click="getPeriodData">get</el-button>
       <div
         class="author-search"
         :class="{ active: searchFocused }">
@@ -53,16 +54,16 @@
         </tr>
       </thead>
       <tbody v-cloak>
-        <tr v-for="(data, index) in pageData">
+        <tr v-for="(val, index) in sortedData">
           <td>{{index + 1}}</td>
           <td v-for="field in fields">
             <div :class="field.key + '__col'">
               <template v-if="field.key === 'name'">
-                <img v-lazy="getGravatarUrl(data['email'])"
-                     :title="data['email']"
+                <img v-lazy="getGravatarUrl(val['email'])"
+                     :title="val['email']"
                      class="author-avatar"/>
               </template>
-              <span> {{data[field.key]}} </span>
+              <span> {{val[field.key]}} </span>
             </div>
           </td>
         </tr>
@@ -72,15 +73,14 @@
 </template>
 
 <script>
+import git from 'modules/git'
+import moment from 'moment'
 import Fuse from 'fuse.js'
 import gravatar from 'gravatar'
 
 let fuse
 
 export default {
-  props: [
-    'options'
-  ],
   data () {
     return {
       startDate: '',
@@ -88,7 +88,6 @@ export default {
       initSortKey: 'commits',
       sortKey: '',
       downSort: true,
-      sortedData: {},
       searchWord: '',
       sortByFuzzySearch: false,
       searchFocused: false,
@@ -105,27 +104,36 @@ export default {
   },
   beforeMount () {
     this.sortByKey(this.initSortKey)
-    fuse = new Fuse(this.data, { keys: ['name'] })
+    fuse = new Fuse(this.authorListData, { keys: ['name'] })
   },
   computed: {
-    totalPage () {
-      return Math.ceil(this.data.length / this.perPage)
+    authorListData () {
+      return _.map(git.authorsData, item => {
+        return {
+          name: item.name,
+          email: item.email,
+          commits: item.commitsCount.total,
+          additions: item.additions.total,
+          deletions: item.deletions.total,
+          activeDay: item.commitsCount.validDayCount(),
+          firstCommitTime: moment(item.firstCommitTime).format('L'),
+          lastCommitTime: moment(item.lastCommitTime).format('L')
+        }
+      })
     },
     totalAuthors () {
-      return this.options.data.length
+      return this.authorListData.length
     },
-    data () {
-      return this.options.data
-    },
-    pageData () {
+    sortedData () {
       let filteredData
+
       if (this.searchWord) {
         filteredData = fuse.search(this.searchWord)
         if (!this.sortByFuzzySearch) {
           filteredData = this.sortData(filteredData)
         }
       } else {
-        filteredData = this.sortData(this.data)
+        filteredData = this.sortData(this.authorListData)
       }
 
       return filteredData
@@ -137,9 +145,6 @@ export default {
     },
     handleSearchBlur () {
       this.searchFocused = false
-    },
-    pageChange (page) {
-      this.currentPage = page
     },
     compareKey (key) {
       const downSort = this.downSort
@@ -172,15 +177,19 @@ export default {
     },
     getGravatarUrl (email) {
       return gravatar.url(email, { protocol: 'http', default: 'mm' })
+    },
+    getPeriodData () {
+      console.log(this.startDate)
+      console.log(this.endDate)
     }
   },
   watch: {
-    data: function () {
+    authorListData () {
       this.downSort = true
       this.sortKey = ''
       this.sortByKey(this.initSortKey)
     },
-    searchWord: function () {
+    searchWord () {
       this.sortByFuzzySearch = true
     }
   }

@@ -102,13 +102,13 @@ class Git {
     storage.get(this.storageKey, (error, data) => {
       if (error) throw error
 
-      this.authorsData = _.map(data.authorsData, (storageData) => {
+      this.authorsData = _.map(data.authorsData, storageData => {
         return new AuthorData(storageData)
       })
       this.repoData = new RepoData(data.repoData)
 
-      vStore.commit('dataCollectFinish')
       console.info('仓库数据恢复完毕')
+      vStore.commit('dataCollectFinish')
     })
   }
 
