@@ -108,7 +108,7 @@ class Git {
       this.repoData = new RepoData(data.repoData)
 
       vStore.commit('dataCollectFinish')
-      console.log('仓库数据恢复完毕')
+      console.info('仓库数据恢复完毕')
     })
   }
 

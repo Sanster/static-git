@@ -1,14 +1,15 @@
 <template>
   <div class="container">
     <title-bar></title-bar>
+
     <empty-view v-if="!dataCollectDone && !isCollectingData"></empty-view>
+
     <load-view v-if="isCollectingData"> </load-view>
+
     <div class="content"
         v-if="dataCollectDone">
       <div class="content-detail">
-          <keep-alive>
-            <component :is="currentView" :options="options"></component>
-          </keep-alive>
+          <component :is="currentView" :options="options"></component>
       </div>
     </div>
   </div>
@@ -29,7 +30,6 @@ import git from 'modules/git'
 export default {
   data () {
     return {
-      dataCollectDone: false,
       statsIndex: 0
     }
   },

@@ -1,10 +1,13 @@
 import Vue from 'vue'
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-default/index.css'
 import app from './app.vue'
 import VueLazyload from 'vue-lazyload'
 import store from './store'
 import 'font-awesome/css/font-awesome.css'
 import './stylesheet/app.scss'
-import './stylesheet/vue-transition.scss'
+
+Vue.use(ElementUI)
 
 // or with options
 Vue.use(VueLazyload, {

@@ -1,14 +1,26 @@
 <template>
-  <div class="author-list card">
-    <div class="card-header">
-      <div class="card-title">
-        <div class="author-list-title">
-          <span>{{totalAuthors}}</span>
-          <h3>Contributors</h3>
-        </div>
+  <div class="author-list">
+    <!--<div class="author-list-header">
+      <div class="author-list-title">
+        <span>{{totalAuthors}}</span>
+        <h3>Contributors</h3>
       </div>
+    </div>-->
+    <div class="author-list-filter">
+      <el-date-picker
+        v-model="startDate"
+        type="date"
+        placeholder="Start Date">
+      </el-date-picker>
+
+      <el-date-picker
+        v-model="endDate"
+        type="date"
+        placeholder="End Date">
+      </el-date-picker>
+
       <div
-        class="search"
+        class="author-search"
         :class="{ active: searchFocused }">
         <i class="fa fa-search search-icon"></i>
         <input
@@ -23,7 +35,11 @@
     <table class="author-list-table">
       <thead>
         <tr>
-          <th class="author-rank">#</th>
+          <th class="author-rank">
+          <el-tooltip effect="dark" :content="totalAuthors + ' Contributors'" placement="top">
+            <span>#</span>
+          </el-tooltip>
+          </th>
           <th v-for="field in fields"
               @click.prevent="sortByKey(field.key)"
               :class="field.key + '__col'">
@@ -49,7 +65,7 @@
               <span> {{data[field.key]}} </span>
             </div>
           </td>
-        <tr>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -67,6 +83,8 @@ export default {
   ],
   data () {
     return {
+      startDate: '',
+      endDate: '',
       initSortKey: 'commits',
       sortKey: '',
       downSort: true,
@@ -75,34 +93,13 @@ export default {
       sortByFuzzySearch: false,
       searchFocused: false,
       fields: [
-        {
-          label: 'Name',
-          key: 'name'
-        },
-        {
-          label: 'Commits',
-          key: 'commits'
-        },
-        {
-          label: '+ +',
-          key: 'additions'
-        },
-        {
-          label: '- -',
-          key: 'deletions'
-        },
-        {
-          label: 'Active Days',
-          key: 'activeDay'
-        },
-        {
-          label: 'First Commit',
-          key: 'firstCommitTime'
-        },
-        {
-          label: 'Last Commit',
-          key: 'lastCommitTime'
-        }
+        { label: 'Name', key: 'name' },
+        { label: 'Commits', key: 'commits' },
+        { label: '+ +', key: 'additions' },
+        { label: '- -', key: 'deletions' },
+        { label: 'Active Days', key: 'activeDay' },
+        { label: 'First Commit', key: 'firstCommitTime' },
+        { label: 'Last Commit', key: 'lastCommitTime' }
       ]
     }
   },
@@ -193,9 +190,19 @@ export default {
 <style lang="sass">
 @import '../stylesheet/vars.scss';
 
+$name-col-width: 140px;
+$commits-col-width: 90px;
+$add-del-col-width: 60px;
+$active-day-width: 100px;
+$commit-time-width: 100px;
+
+$search-input-width: 110px;
+
 .author-list {
-  padding-bottom: 20px;
   background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .author-avatar {
@@ -206,10 +213,21 @@ export default {
   margin-right: 10px;
 }
 
+.author-list-header {
+  position: relative;
+  padding-top: 20px;
+  margin: auto;
+  margin-bottom: 20px;
+}
+
+.author-list-filter {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 15px;
+}
+
 .author-list-table {
   font-size: 15px;
-  width: 90%;
-  margin: auto;
   position: relative;
   z-index: 1;
   border-collapse: collapse;
@@ -253,7 +271,6 @@ export default {
 
   td {
     height: 22px;
-    cursor: pointer;
     vertical-align: center;
 
     .name__col {
@@ -268,22 +285,25 @@ export default {
     white-space: nowrap;
     align-items: center;
     text-align: left;
-    width: 140px;
+    width: $name-col-width;
   }
 
   .commits__col {
-    width: 90px;
+    width: $commits-col-width;
   }
 
   .additions__col,
   .deletions__col {
-    width: 60px;
+    width: $add-del-col-width;
   }
 
-  .activeDay__col,
+  .activeDay__col {
+    width: $active-day-width;
+  }
+
   .firstCommitTime__col,
   .lastCommitTime__col {
-    width: 100px;
+    width: $commit-time-width;
   }
 }
 
@@ -294,21 +314,19 @@ export default {
 }
 
 .author-search-input {
-  float: right;
   height: 25px;
-  width: 150px;
   border: 0px;
   border-bottom: 1px solid #dcd9d9;
   padding-left: 22px;
+  width: $search-input-width;
 
   &:focus {
     outline: none;
   }
 }
 
-.search {
-  position: absolute;
-  right: 0px;
+.author-search {
+  position: relative;
 
   .search-icon {
     position: absolute;

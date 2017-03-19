@@ -15,7 +15,7 @@
       <div class="Repo name">
         Total Contributors: {{totalContributors}}
       </div>
-    </div
+    </div>
   </div>
 </template>
 
